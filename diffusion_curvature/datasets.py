@@ -16,7 +16,10 @@ def rejection_sample(n, r, R):
 def torus(n=2000, c=2, a=1, noise=None, seed=None):
     """
     Sample `n` data points on a torus. Modified from [tadasets.shapes — TaDAsets 0.1.0 documentation](https://tadasets.scikit-tda.org/en/latest/_modules/tadasets/shapes.html#torus)
-    Uses rejection sampling
+    Uses rejection sampling.
+
+    In addition to the randomly generated points, a few constant points have been added.
+    The 0th point is on the outer rim, in a region of high positive curvature. The 1st point is in the inside, in a region of negative curvature, and the 2nd point is on the top, where the curvature should be closer to zero.
 
     Parameters
     -----------
@@ -43,7 +46,7 @@ def torus(n=2000, c=2, a=1, noise=None, seed=None):
     data[:, 1] = (c + a * np.cos(theta)) * np.sin(phi)
     data[:, 2] = a * np.sin(theta)
 
-    data = np.vstack([[[0,-c-a,0],[0,a,0]],data])
+    data = np.vstack([[[0,-c-a,0],[0,c-a,0],[0,c,a]],data])
 
     if noise:
         data += noise * np.random.randn(*data.shape)

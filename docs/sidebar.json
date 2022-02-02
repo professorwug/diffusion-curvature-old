@@ -3,6 +3,7 @@
     "Overview": "/",
     "Core Utilities": "core.html",
     "Torus": "datasets.html",
-    "Laziness Curvature": "laziness.html"
+    "Laziness Curvature": "laziness.html",
+    "Laziness Decay Graphs": "laziness_decay.html"
   }
 }

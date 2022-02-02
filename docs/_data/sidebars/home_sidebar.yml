@@ -18,6 +18,9 @@ entries:
     - output: web,pdf
       title: Laziness Curvature
       url: laziness.html
+    - output: web,pdf
+      title: Laziness Decay Graphs
+      url: laziness_decay.html
     output: web
     title: diffusion_curvature
   output: web

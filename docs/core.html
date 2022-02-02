@@ -54,7 +54,7 @@ nb_path: "00_core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="DiffusionMatrix" class="doc_header"><code>DiffusionMatrix</code><a href="__main__.py#L4" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>DiffusionMatrix</code>(<strong><code>X</code></strong>, <strong><code>kernel_type</code></strong>=<em><code>'fixed'</code></em>, <strong><code>sigma</code></strong>=<em><code>0.7</code></em>, <strong><code>k</code></strong>=<em><code>3</code></em>, <strong><code>alpha</code></strong>=<em><code>0.5</code></em>, <strong><code>nn</code></strong>=<em><code>5</code></em>)</p>
+<h4 id="DiffusionMatrix" class="doc_header"><code>DiffusionMatrix</code><a href="__main__.py#L4" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>DiffusionMatrix</code>(<strong><code>X</code></strong>, <strong><code>kernel_type</code></strong>=<em><code>'fixed'</code></em>, <strong><code>sigma</code></strong>=<em><code>0.7</code></em>, <strong><code>k</code></strong>=<em><code>20</code></em>, <strong><code>alpha</code></strong>=<em><code>0.5</code></em>, <strong><code>nn</code></strong>=<em><code>5</code></em>)</p>
 </blockquote>
 <p>Given input X returns a diffusion matrix P, as an numpy ndarray.
 X is a numpy array of size n x d
@@ -334,7 +334,7 @@ P is a numpy array of size n x n that is the diffusion matrix</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="plot_3d" class="doc_header"><code>plot_3d</code><a href="https://github.com/professorwug/diffusion_curvature/tree/master/diffusion_curvature/core.py#L65" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>plot_3d</code>(<strong><code>X</code></strong>, <strong><code>distribution</code></strong>=<em><code>None</code></em>, <strong><code>title</code></strong>=<em><code>''</code></em>, <strong><code>lim</code></strong>=<em><code>None</code></em>, <strong><code>use_plotly</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="plot_3d" class="doc_header"><code>plot_3d</code><a href="https://github.com/professorwug/diffusion_curvature/tree/master/diffusion_curvature/core.py#L65" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>plot_3d</code>(<strong><code>X</code></strong>, <strong><code>distribution</code></strong>=<em><code>None</code></em>, <strong><code>title</code></strong>=<em><code>''</code></em>, <strong><code>lim</code></strong>=<em><code>None</code></em>, <strong><code>use_plotly</code></strong>=<em><code>False</code></em>, <strong><code>cmap</code></strong>=<em><code>'plasma'</code></em>)</p>
 </blockquote>
 
 </div>

@@ -6,7 +6,8 @@ index = {"DiffusionMatrix": "00_core.ipynb",
          "plot_3d": "00_core.ipynb",
          "rejection_sample": "01_datasets.ipynb",
          "torus": "01_datasets.ipynb",
-         "curvature": "02_laziness.ipynb"}
+         "curvature": "02_laziness.ipynb",
+         "laziness_decay": "03_laziness_decay.ipynb"}
 
 modules = ["core.py",
            "datasets.py",

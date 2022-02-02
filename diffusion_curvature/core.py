@@ -5,7 +5,7 @@ __all__ = ['DiffusionMatrix', 'plot_3d']
 # Cell
 import numpy as np
 from sklearn.metrics import pairwise_distances
-def DiffusionMatrix(X, kernel_type = "fixed", sigma = 0.7, k = 3, alpha = 0.5, nn=5):
+def DiffusionMatrix(X, kernel_type = "fixed", sigma = 0.7, k = 20, alpha = 0.5, nn=5):
     """
     Given input X returns a diffusion matrix P, as an numpy ndarray.
     X is a numpy array of size n x d
@@ -62,7 +62,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from mpl_toolkits import mplot3d
 
-def plot_3d(X,distribution=None, title="",lim=None,use_plotly=False):
+def plot_3d(X,distribution=None, title="",lim=None,use_plotly=False,cmap="plasma"):
     if distribution is None:
         distribution = np.zeros(len(X))
     if lim is None:
@@ -78,6 +78,6 @@ def plot_3d(X,distribution=None, title="",lim=None,use_plotly=False):
         ax.axes.set_xlim3d(left=-lim, right=lim)
         ax.axes.set_ylim3d(bottom=-lim, top=lim)
         ax.axes.set_zlim3d(bottom=-lim, top=lim)
-        ax.scatter(X[:,0],X[:,1],X[:,2],c=distribution,cmap="plasma")
+        ax.scatter(X[:,0],X[:,1],X[:,2],c=distribution,cmap=cmap)
         ax.set_title(title)
         plt.show()
