@@ -4,7 +4,7 @@ __all__ = ['curvature', 'laziness_decay']
 
 # Cell
 import numpy as np
-def curvature(P, diffusion_powers=8, aperture = 20, smoothing=1, verbose = False, return_density = False, dynamically_adjusting_neighborhood = False, precomputed_powered_P = None):
+def curvature(P, diffusion_powers=8, aperture = 20, smoothing=1, verbose = False, return_density = False, dynamically_adjusting_neighborhood = False, precomputed_powered_P = None, non_lazy_diffusion=False):
     """Diffusion Laziness Curvature
     Estimates curvature by measuring the amount of mass remaining within an initial neighborhood after t steps of diffusion. Akin to measuring the laziness of a random walk after t steps.
 
@@ -50,6 +50,12 @@ def curvature(P, diffusion_powers=8, aperture = 20, smoothing=1, verbose = False
 
     if precomputed_powered_P is not None:
         P_powered = precomputed_powered_P
+    elif non_lazy_diffusion:
+        print("Removing self-diffusion")
+        P_zero_diagonal = (np.ones_like(P) - np.diag(np.ones(len(P))))*P
+        D = np.diag(1/np.sum(P_zero_diagonal,axis=0))
+        P = D @ P_zero_diagonal
+        P_powered = np.linalg.matrix_power(P,diffusion_powers)
     else:
         P_powered = np.linalg.matrix_power(P,diffusion_powers)
     # take the diffusion probs of the neighborhood
@@ -72,7 +78,7 @@ def curvature(P, diffusion_powers=8, aperture = 20, smoothing=1, verbose = False
     return laziness
 
 # Cell
-def laziness_decay(P, max_steps = 32, aperture = 20, smoothing=1, adaptive_neighborhood = False):
+def laziness_decay(P, max_steps = 32, aperture = 20, smoothing=1, adaptive_neighborhood = False, non_lazy_diffusion=False):
     """Generates a matrix of the decaying laziness value per point over a range of t values
 
     Parameters
@@ -91,11 +97,15 @@ def laziness_decay(P, max_steps = 32, aperture = 20, smoothing=1, adaptive_neigh
     ndarray
         Each column is a set of laziness values per point at a specific time.
     """
-    # A prototype: TODO this is really inefficient, as it recomputes the diffusion powers each time!
     decay_per_point = np.empty((len(P),max_steps))
+    if non_lazy_diffusion:
+        print("Removing self-diffusion")
+        P_zero_diagonal = (np.ones_like(P) - np.diag(np.ones(len(P))))*P
+        D = np.diag(1/np.sum(P_zero_diagonal,axis=0))
+        P = D @ P_zero_diagonal
     P_t = P
     for t in range(1,max_steps+1):
         P_t = P_t @ P
-        laziness = curvature(P,diffusion_powers=t,aperture=aperture,precomputed_powered_P=P_t,smoothing=smoothing,dynamically_adjusting_neighborhood=adaptive_neighborhood)
+        laziness = curvature(P,diffusion_powers=t,aperture=aperture,precomputed_powered_P=P_t,smoothing=smoothing,dynamically_adjusting_neighborhood=adaptive_neighborhood, non_lazy_diffusion=non_lazy_diffusion)
         decay_per_point[:,t-1] = laziness
     return decay_per_point
