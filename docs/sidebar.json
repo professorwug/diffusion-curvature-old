@@ -1,6 +1,8 @@
 {
   "diffusion_curvature": {
     "Overview": "/",
-    "Diffusion Curvature": "core.html"
+    "Core Utilities": "core.html",
+    "Torus": "datasets.html",
+    "Laziness Curvature": "laziness.html"
   }
 }

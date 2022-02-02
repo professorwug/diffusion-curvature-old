@@ -10,8 +10,14 @@ entries:
       title: Overview
       url: /
     - output: web,pdf
-      title: Diffusion Curvature
+      title: Core Utilities
       url: core.html
+    - output: web,pdf
+      title: Torus
+      url: datasets.html
+    - output: web,pdf
+      title: Laziness Curvature
+      url: laziness.html
     output: web
     title: diffusion_curvature
   output: web
