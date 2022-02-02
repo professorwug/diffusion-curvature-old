@@ -72,7 +72,7 @@ def curvature(P, diffusion_powers=8, aperture = 20, smoothing=1, verbose = False
     return laziness
 
 # Cell
-def laziness_decay(P, max_steps = 32, aperture = 20, smoothing=1):
+def laziness_decay(P, max_steps = 32, aperture = 20, smoothing=1, adaptive_neighborhood = False):
     """Generates a matrix of the decaying laziness value per point over a range of t values
 
     Parameters
@@ -96,6 +96,6 @@ def laziness_decay(P, max_steps = 32, aperture = 20, smoothing=1):
     P_t = P
     for t in range(1,max_steps+1):
         P_t = P_t @ P
-        laziness = curvature(P,diffusion_powers=t,aperture=aperture,precomputed_powered_P=P_t,smoothing=smoothing)
+        laziness = curvature(P,diffusion_powers=t,aperture=aperture,precomputed_powered_P=P_t,smoothing=smoothing,dynamically_adjusting_neighborhood=adaptive_neighborhood)
         decay_per_point[:,t-1] = laziness
     return decay_per_point
