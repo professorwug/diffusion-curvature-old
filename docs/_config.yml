@@ -2,7 +2,7 @@ repository: professorwug/diffusion_curvature
 output: web
 topnav_title: diffusion_curvature
 site_title: diffusion_curvature
-company_name: MIT
+company_name: Sarkland Consulting Group
 description: Graph curvature with diffusion
 # Set to false to disable KaTeX math
 use_math: true
