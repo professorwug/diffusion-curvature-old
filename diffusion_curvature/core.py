@@ -78,6 +78,6 @@ def plot_3d(X,distribution=None, title="",lim=None,use_plotly=False):
         ax.axes.set_xlim3d(left=-lim, right=lim)
         ax.axes.set_ylim3d(bottom=-lim, top=lim)
         ax.axes.set_zlim3d(bottom=-lim, top=lim)
-        ax.scatter(X[:,0],X[:,1],X[:,2],c=distribution)
+        ax.scatter(X[:,0],X[:,1],X[:,2],c=distribution,cmap="plasma")
         ax.set_title(title)
         plt.show()

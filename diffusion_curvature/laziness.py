@@ -5,6 +5,33 @@ __all__ = ['curvature']
 # Cell
 import numpy as np
 def curvature(P, diffusion_powers=8, aperture = 20, smoothing=1, verbose = False, return_density = False, dynamically_adjusting_neighborhood = False, precomputed_powered_P = None):
+    """Diffusion Laziness Curvature
+    Estimates curvature by measuring the amount of mass remaining within an initial neighborhood after t steps of diffusion. Akin to measuring the laziness of a random walk after t steps.
+
+    Parameters
+    ----------
+    P : n x n ndarray
+        The diffusion matrix of the graph
+    diffusion_powers : int, optional
+        Number of steps of diffusion to take before measuring the laziness, by default 8
+    aperture : int, optional
+        The size of the initial neighborhood, from which the percentage of mass remaining in this neighborhood is calculated, by default 20
+    smoothing : int, optional
+        Amount of smoothing to apply. Currently works by multiplying the raw laziness values with the diffusion operator, as a kind of iterated weighted averaging; by default 1
+    verbose : bool, optional
+        Print diagnostics, by default False
+    return_density : bool, optional
+        Return the number of neighbors each point shares, by default False
+    dynamically_adjusting_neighborhood : bool, optional
+        Whether to give each point the same initial neighborhood size, by default False
+    precomputed_powered_P : ndarray, optional
+        Optionally pass a precomputed powered diffusion operator, to speed up computation, by default None
+
+    Returns
+    -------
+    length n array
+        The laziness curvature values for each point
+    """
     # the aperture sets the size of the one-hop neighborhood
     # the aperture parameter is the average number of neighbors to include, based off of the sorted diffusion values
     # Set thresholds as the kth largest diffusion value, presumed to be held by the kth nearest neighbor.
