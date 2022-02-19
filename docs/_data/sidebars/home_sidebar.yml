@@ -21,6 +21,15 @@ entries:
     - output: web,pdf
       title: Laziness Decay Graphs
       url: laziness_decay.html
+    - output: web,pdf
+      title: Region Limited Laziness
+      url: region_limited_laziness.html
+    - output: web,pdf
+      title: Title
+      url: Absolute Curvature with Laziness.html
+    - output: web,pdf
+      title: Comparisons to Ground Truth Sectional Curvature
+      url: ground_truth_comparisons.html
     output: web
     title: diffusion_curvature
   output: web

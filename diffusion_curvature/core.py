@@ -5,7 +5,7 @@ __all__ = ['DiffusionMatrix', 'plot_3d']
 # Cell
 import numpy as np
 from sklearn.metrics import pairwise_distances
-def DiffusionMatrix(X, kernel_type = "fixed", sigma = 0.7, k = 20, alpha = 0.5, nn=5):
+def DiffusionMatrix(X, kernel_type = "fixed", sigma = 0.7, k = 20, alpha = 0.5, nn=5, affinity_matrix_only=False):
     """
     Given input X returns a diffusion matrix P, as an numpy ndarray.
     X is a numpy array of size n x d
@@ -28,7 +28,7 @@ def DiffusionMatrix(X, kernel_type = "fixed", sigma = 0.7, k = 20, alpha = 0.5, 
         div2 = distance_to_k_neighbor[:,None] @ np.ones(len(D))[None,:]
         print("Distance to kth neighbors",distance_to_k_neighbor)
         # compute the gaussian kernel with an adaptive bandwidth
-        W = (1/2*np.sqrt(2*np.pi))*(np.exp(-D**2/(2*div1**2))/div1 + np.exp(-D**2/(2*div2**2)/div2))
+        W = (1/2*np.sqrt(2*np.pi))*(np.exp(-D**2/(2*div1**2))/div1 + np.exp(-D**2/(2*div2**2))/div2)
         if kernel_type == "adaptive anisotropic":
             # Additional normalization step for density
             D = np.diag(1/np.sum(W,axis=1))
@@ -48,6 +48,8 @@ def DiffusionMatrix(X, kernel_type = "fixed", sigma = 0.7, k = 20, alpha = 0.5, 
         W = 0.5*(tf.exp(-(D/div1)**alpha) + tf.exp(-(D/div2)**alpha))
     else:
         raise ValueError("kernel_type must be either 'fixed' or 'adaptive'")
+    if affinity_matrix_only:
+        return W
     # turn affinity matrix into diffusion matrix
     D = np.diag(1/np.sum(W,axis=1))
     P = D @ W
@@ -62,7 +64,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from mpl_toolkits import mplot3d
 
-def plot_3d(X,distribution=None, title="",lim=None,use_plotly=False,cmap="plasma"):
+def plot_3d(X,distribution=None, title="",lim=None,use_plotly=False,colorbar = False, cmap="plasma"):
     if distribution is None:
         distribution = np.zeros(len(X))
     if lim is None:
@@ -78,6 +80,7 @@ def plot_3d(X,distribution=None, title="",lim=None,use_plotly=False,cmap="plasma
         ax.axes.set_xlim3d(left=-lim, right=lim)
         ax.axes.set_ylim3d(bottom=-lim, top=lim)
         ax.axes.set_zlim3d(bottom=-lim, top=lim)
-        ax.scatter(X[:,0],X[:,1],X[:,2],c=distribution,cmap=cmap)
+        im = ax.scatter(X[:,0],X[:,1],X[:,2],c=distribution,cmap=cmap)
         ax.set_title(title)
+        if colorbar: fig.colorbar(im, ax=ax)
         plt.show()

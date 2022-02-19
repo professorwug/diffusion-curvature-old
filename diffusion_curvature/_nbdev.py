@@ -4,10 +4,15 @@ __all__ = ["index", "modules", "custom_doc_links", "git_url"]
 
 index = {"DiffusionMatrix": "00_core.ipynb",
          "plot_3d": "00_core.ipynb",
-         "rejection_sample": "01_datasets.ipynb",
+         "rejection_sample_for_torus": "01_datasets.ipynb",
          "torus": "01_datasets.ipynb",
+         "rejection_sample_for_hyperboloid": "01_datasets.ipynb",
+         "hyperboloid": "01_datasets.ipynb",
+         "rejection_sample_for_ellipsoid": "01_datasets.ipynb",
+         "ellipsoid": "01_datasets.ipynb",
          "curvature": "02_laziness.ipynb",
-         "laziness_decay": "03_laziness_decay.ipynb"}
+         "laziness_decay": "03_laziness_decay.ipynb",
+         "local_laziness": "04_region_limited_laziness.ipynb"}
 
 modules = ["core.py",
            "datasets.py",

@@ -4,6 +4,9 @@
     "Core Utilities": "core.html",
     "Torus": "datasets.html",
     "Laziness Curvature": "laziness.html",
-    "Laziness Decay Graphs": "laziness_decay.html"
+    "Laziness Decay Graphs": "laziness_decay.html",
+    "Region Limited Laziness": "region_limited_laziness.html",
+    "Title": "Absolute Curvature with Laziness.html",
+    "Comparisons to Ground Truth Sectional Curvature": "ground_truth_comparisons.html"
   }
 }
