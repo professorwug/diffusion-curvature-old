@@ -25,7 +25,10 @@ entries:
       title: Region Limited Laziness
       url: region_limited_laziness.html
     - output: web,pdf
-      title: Title
+      title: Constant Curvature Surface Testing
+      url: 1.3-Constant-Curvature-Surface-Testing.html
+    - output: web,pdf
+      title: Absolute Curvature with Diffusion Laziness
       url: Absolute Curvature with Laziness.html
     - output: web,pdf
       title: Diffusion Curvature Explained
