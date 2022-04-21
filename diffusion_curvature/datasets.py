@@ -6,7 +6,7 @@ __all__ = ['rejection_sample_for_torus', 'torus', 'rejection_sample_for_hyperbol
 # Cell
 import numpy as np
 from .core import plot_3d
-
+from nbdev.showdoc import *
 
 # Cell
 def rejection_sample_for_torus(n, r, R):

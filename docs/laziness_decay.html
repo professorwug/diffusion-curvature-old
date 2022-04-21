@@ -45,7 +45,7 @@ nb_path: "03_laziness_decay.ipynb"
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">diffusion_curvature</span> <span class="c1"># our main package</span>
 <span class="kn">from</span> <span class="nn">diffusion_curvature.core</span> <span class="kn">import</span> <span class="n">plot_3d</span><span class="p">,</span> <span class="n">DiffusionMatrix</span>
-<span class="kn">from</span> <span class="nn">diffusion_curvature.laziness</span> <span class="kn">import</span> <span class="n">curvature</span>
+<span class="kn">from</span> <span class="nn">diffusion_curvature.laziness</span> <span class="kn">import</span> <span class="n">curvature</span><span class="p">,</span> <span class="n">local_laziness</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 </pre></div>
 
@@ -71,7 +71,7 @@ nb_path: "03_laziness_decay.ipynb"
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">diffusion_curvature.datasets</span> <span class="kn">import</span> <span class="n">torus</span>
-<span class="n">X</span> <span class="o">=</span> <span class="n">torus</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">5000</span><span class="p">,</span><span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">X</span><span class="p">,</span> <span class="n">ks</span> <span class="o">=</span> <span class="n">torus</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">5000</span><span class="p">,</span><span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
 <span class="n">P</span> <span class="o">=</span> <span class="n">DiffusionMatrix</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">kernel_type</span><span class="o">=</span><span class="s1">&#39;adaptive anisotropic&#39;</span><span class="p">,</span><span class="n">k</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
 <span class="c1"># the hyperparameters here are the kernel type and the kernel bandwidth. I&#39;ve chosen them by hand to work well.</span>
 </pre></div>
@@ -86,7 +86,7 @@ nb_path: "03_laziness_decay.ipynb"
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Distance to kth neighbors [0.44991467 0.43461588 0.34399481 ... 0.41987486 0.3873949  0.44752493]
+<pre>Distance to kth neighbors [0.39618701 0.35281059 0.39239843 ... 0.41987486 0.3873949  0.44752493]
 </pre>
 </div>
 </div>
@@ -115,7 +115,7 @@ nb_path: "03_laziness_decay.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="laziness_decay" class="doc_header"><code>laziness_decay</code><a href="https://github.com/professorwug/diffusion_curvature/tree/master/diffusion_curvature/laziness.py#L75" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>laziness_decay</code>(<strong><code>P</code></strong>, <strong><code>max_steps</code></strong>=<em><code>32</code></em>, <strong><code>aperture</code></strong>=<em><code>20</code></em>, <strong><code>smoothing</code></strong>=<em><code>1</code></em>, <strong><code>adaptive_neighborhood</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="laziness_decay" class="doc_header"><code>laziness_decay</code><a href="__main__.py#L3" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>laziness_decay</code>(<strong><code>A</code></strong>, <strong><code>max_steps</code></strong>=<em><code>32</code></em>, <strong><code>aperture</code></strong>=<em><code>20</code></em>, <strong><code>neighborhood</code></strong>=<em><code>10</code></em>, <strong><code>smoothing</code></strong>=<em><code>1</code></em>, <strong><code>adaptive_neighborhood</code></strong>=<em><code>False</code></em>, <strong><code>non_lazy_diffusion</code></strong>=<em><code>False</code></em>, <strong><code>use_local_laziness</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 <p>Generates a matrix of the decaying laziness value per point over a range of t values</p>
 <h2 id="Parameters">Parameters<a class="anchor-link" href="#Parameters"> </a></h2><p>P : ndarray
@@ -365,9 +365,9 @@ Wall time: 11.7 s
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">decaying_lazy</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Negative&#39;</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">decaying_lazy</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Zero&#39;</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">decaying_lazy</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;green&#39;</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Positive&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">decaying_lazy</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Zero&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">decaying_lazy</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Negative&#39;</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Diffusion Time Steps&quot;</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Laziness&quot;</span><span class="p">)</span>

@@ -28,6 +28,9 @@ entries:
       title: Title
       url: Absolute Curvature with Laziness.html
     - output: web,pdf
+      title: Diffusion Curvature Explained
+      url: diffusion_curvature_demo.html
+    - output: web,pdf
       title: Comparisons to Ground Truth Sectional Curvature
       url: ground_truth_comparisons.html
     output: web
