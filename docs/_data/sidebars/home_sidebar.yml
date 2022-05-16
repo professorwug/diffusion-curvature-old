@@ -13,8 +13,8 @@ entries:
       title: Core Utilities
       url: core.html
     - output: web,pdf
-      title: Torus
-      url: datasets.html
+      title: Rejection Sampling
+      url: dataset tests avg transition probs.html
     - output: web,pdf
       title: Laziness Curvature
       url: laziness.html
@@ -25,8 +25,17 @@ entries:
       title: Region Limited Laziness
       url: region_limited_laziness.html
     - output: web,pdf
+      title: Harnessing Diffusion Laziness for more Detailed information
+      url: positive_vs_negative_detection.html
+    - output: web,pdf
+      title: Laziness Curvature on the Saddle
+      url: 08-hyperboloid-tests.html
+    - output: web,pdf
       title: Constant Curvature Surface Testing
       url: 1.3-Constant-Curvature-Surface-Testing.html
+    - output: web,pdf
+      title: Results on Ian's Reformulated Diffusion Curvature
+      url: Testing Avg Transition Prob Curvature.html
     - output: web,pdf
       title: Absolute Curvature with Diffusion Laziness
       url: Absolute Curvature with Laziness.html

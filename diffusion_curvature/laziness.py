@@ -4,7 +4,7 @@ __all__ = ['curvature', 'laziness_decay', 'local_laziness']
 
 # Cell
 import numpy as np
-def curvature(P, diffusion_powers=8, aperture = 20, smoothing=1, verbose = False, return_density = False, dynamically_adjusting_neighborhood = False, precomputed_powered_P = None, non_lazy_diffusion=False, restrict_diffusion_to_k_neighborhood=None):
+def curvature(P, diffusion_powers=8, aperture = 20, smoothing=1, verbose = False, return_density = False, dynamically_adjusting_neighborhood = False, precomputed_powered_P = None, non_lazy_diffusion=False, restrict_diffusion_to_k_neighborhood=None, avg_transition_probability=True, use_min_threshold = False):
     """Diffusion Laziness Curvature
     Estimates curvature by measuring the amount of mass remaining within an initial neighborhood after t steps of diffusion. Akin to measuring the laziness of a random walk after t steps.
 
@@ -26,6 +26,10 @@ def curvature(P, diffusion_powers=8, aperture = 20, smoothing=1, verbose = False
         Whether to give each point the same initial neighborhood size, by default False
     precomputed_powered_P : ndarray, optional
         Optionally pass a precomputed powered diffusion operator, to speed up computation, by default None
+    avg_transition_probability: bool, default True
+        Use the definition of diffusion curvature in which the summed transition probabilities are divided by the total number of points in the aperture neighborhood.
+        As a result, gives not the summed "return probability within the neighborhood" but the average return probability to each point in the aperture neighborhood.
+        This formulation of diffusion curvature was used in proof given in our NeurIPS 2022 paper.
 
     Returns
     -------
@@ -41,7 +45,10 @@ def curvature(P, diffusion_powers=8, aperture = 20, smoothing=1, verbose = False
     if dynamically_adjusting_neighborhood:
         P_thresholded = (P >= thresholds[:,None]).astype(int)
     else:
-        P_threshold = np.mean(thresholds) # TODO could also use min
+        if use_min_threshold:
+            P_threshold = np.min(thresholds)
+        else:
+            P_threshold = np.mean(thresholds) # TODO could also use min
         P_thresholded = (P >= P_threshold).astype(int)
         if verbose: print("Derived threshold ",P_threshold)
 
@@ -61,6 +68,15 @@ def curvature(P, diffusion_powers=8, aperture = 20, smoothing=1, verbose = False
     # take the diffusion probs of the neighborhood
     near_neighbors_only = P_powered * P_thresholded
     laziness_aggregate = np.sum(near_neighbors_only,axis=1)
+    if avg_transition_probability:
+        ones_matrix = np.ones_like(P_thresholded)
+        ones_remaining = ones_matrix * P_thresholded
+        local_density = np.sum(ones_remaining,axis=1)
+        if verbose: print("local density",local_density)
+        # divide by the number of neighbors diffused to
+        # TODO: In case of isolated points, replace local density of 0 with 1. THe laziness will evaluate to zero.
+        local_density[local_density==0]=1
+        laziness_aggregate = laziness_aggregate / local_density
     laziness = laziness_aggregate
     if smoothing: # TODO there are probably more intelligent ways to do this smoothing
         # Local averaging to counter the effects local density

@@ -5,7 +5,7 @@ __all__ = ['DiffusionMatrix', 'plot_3d']
 # Cell
 import numpy as np
 from sklearn.metrics import pairwise_distances
-def DiffusionMatrix(X, kernel_type = "fixed", sigma = 0.7, k = 20, alpha = 0.5, nn=5, affinity_matrix_only=False):
+def DiffusionMatrix(X, kernel_type = "fixed", sigma = 0.7, k = 20, alpha = 0.5, affinity_matrix_only=False):
     """
     Given input X returns a diffusion matrix P, as an numpy ndarray.
     X is a numpy array of size n x d
@@ -26,7 +26,7 @@ def DiffusionMatrix(X, kernel_type = "fixed", sigma = 0.7, k = 20, alpha = 0.5, 
         # Populate matrices with this distance for easy division.
         div1 = np.ones(len(D))[:,None] @ distance_to_k_neighbor[None,:]
         div2 = distance_to_k_neighbor[:,None] @ np.ones(len(D))[None,:]
-        print("Distance to kth neighbors",distance_to_k_neighbor)
+        # print("Distance to kth neighbors",distance_to_k_neighbor)
         # compute the gaussian kernel with an adaptive bandwidth
         W = (1/2*np.sqrt(2*np.pi))*(np.exp(-D**2/(2*div1**2))/div1 + np.exp(-D**2/(2*div2**2))/div2)
         if kernel_type == "adaptive anisotropic":
