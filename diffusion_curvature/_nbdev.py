@@ -12,13 +12,15 @@ index = {"DiffusionMatrix": "00_core.ipynb",
          "ellipsoid": "11_dataset tests avg transition probs.ipynb",
          "rejection_sample_for_saddle": "11_dataset tests avg transition probs.ipynb",
          "paraboloid": "11_dataset tests avg transition probs.ipynb",
-         "curvature": "02_laziness.ipynb",
+         "curvature": "12_differentiable_diffusion_curvature.ipynb",
          "laziness_decay": "03_laziness_decay.ipynb",
-         "local_laziness": "04_region_limited_laziness.ipynb"}
+         "local_laziness": "04_region_limited_laziness.ipynb",
+         "matpower": "sparse_matrices_exploration.ipynb"}
 
 modules = ["core.py",
            "datasets.py",
-           "laziness.py"]
+           "laziness.py",
+           "differentiable_laziness.py"]
 
 doc_url = "https://x.riddle.press/diffusion_curvature/"
 

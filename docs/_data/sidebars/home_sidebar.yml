@@ -37,6 +37,9 @@ entries:
       title: Results on Ian's Reformulated Diffusion Curvature
       url: Testing Avg Transition Prob Curvature.html
     - output: web,pdf
+      title: 'Differentiable Diffusion Curvature '
+      url: differentiable_diffusion_curvature.html
+    - output: web,pdf
       title: Absolute Curvature with Diffusion Laziness
       url: Absolute Curvature with Laziness.html
     - output: web,pdf
@@ -45,6 +48,15 @@ entries:
     - output: web,pdf
       title: Comparisons to Ground Truth Sectional Curvature
       url: ground_truth_comparisons.html
+    - output: web,pdf
+      title: Diffusion Curvature on the iPSC Dataset
+      url: ipsc_testing.html
+    - output: web,pdf
+      title: Landmark-based laziness
+      url: sparse_matrices_exploration.html
+    - output: web,pdf
+      title: Testing the fast laziness calculator
+      url: sparse_matrix_explorations_2.html
     output: web
     title: diffusion_curvature
   output: web

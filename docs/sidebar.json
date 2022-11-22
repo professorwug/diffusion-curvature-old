@@ -10,8 +10,12 @@
     "Laziness Curvature on the Saddle": "08-hyperboloid-tests.html",
     "Constant Curvature Surface Testing": "1.3-Constant-Curvature-Surface-Testing.html",
     "Results on Ian's Reformulated Diffusion Curvature": "Testing Avg Transition Prob Curvature.html",
+    "Differentiable Diffusion Curvature ": "differentiable_diffusion_curvature.html",
     "Absolute Curvature with Diffusion Laziness": "Absolute Curvature with Laziness.html",
     "Diffusion Curvature Explained": "diffusion_curvature_demo.html",
-    "Comparisons to Ground Truth Sectional Curvature": "ground_truth_comparisons.html"
+    "Comparisons to Ground Truth Sectional Curvature": "ground_truth_comparisons.html",
+    "Diffusion Curvature on the iPSC Dataset": "ipsc_testing.html",
+    "Landmark-based laziness": "sparse_matrices_exploration.html",
+    "Testing the fast laziness calculator": "sparse_matrix_explorations_2.html"
   }
 }
