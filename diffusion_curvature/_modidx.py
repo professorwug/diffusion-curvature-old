@@ -2,7 +2,7 @@
 
 d = { 'settings': { 'branch': 'master',
                 'doc_baseurl': '/diffusion_curvature',
-                'doc_host': 'https://professorwug.github.io',
+                'doc_host': 'https://x.riddle.press',
                 'git_url': 'https://github.com/professorwug/diffusion_curvature',
                 'lib_path': 'diffusion_curvature'},
   'syms': { 'diffusion_curvature.core': { 'diffusion_curvature.core.DiffusionMatrix': ( 'core.html#diffusionmatrix',
