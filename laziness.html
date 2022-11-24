@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.269">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="Implementation of diffusion curvature">
+
+<title>diffusion_curvature - 02 “Diffusion Laziness” Curvature</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+<script src="https://unpkg.com/@jupyter-widgets/html-manager@*/dist/embed-amd.js" crossorigin="anonymous"></script>
+
+
+<link rel="stylesheet" href="styles.css">
+<meta property="og:title" content="diffusion_curvature - 02 “Diffusion Laziness” Curvature">
+<meta property="og:description" content="Implementation of diffusion curvature">
+<meta property="og:site-name" content="diffusion_curvature">
+<meta name="twitter:title" content="diffusion_curvature - 02 “Diffusion Laziness” Curvature">
+<meta name="twitter:description" content="Implementation of diffusion curvature">
+<meta name="twitter:card" content="summary">
+</head>
+
+<body class="nav-sidebar floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">diffusion_curvature</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/professorwug/diffusion_curvature"><i class="bi bi-github" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+              <div class="quarto-toggle-container">
+                  <a href="" class="quarto-reader-toggle nav-link" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+              </div>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title">02 “Diffusion Laziness” Curvature</h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">diffusion_curvature</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./core.html" class="sidebar-item-text sidebar-link">00 Core Utilities</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./diffusion_curvature_explained.html" class="sidebar-item-text sidebar-link">00a Diffusion Curvature, Explained</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./datasets.html" class="sidebar-item-text sidebar-link">01 Toy Datasets</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./laziness.html" class="sidebar-item-text sidebar-link active">02 “Diffusion Laziness” Curvature</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./laziness_decay.html" class="sidebar-item-text sidebar-link">02a Laziness Decay</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./region_limited_laziness.html" class="sidebar-item-text sidebar-link">02b Region Limited Laziness</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./flat_walk_estimation.html" class="sidebar-item-text sidebar-link">02c Flat Walk Estimation for Signed Diffusion Curvature</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./differentiable_diffusion_curvature.html" class="sidebar-item-text sidebar-link">02d Differentiable Diffusion Curvature</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ground-truth-comparisons.html" class="sidebar-item-text sidebar-link">03 Ground Truth Comparisons</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./hyperboloid-tests.html" class="sidebar-item-text sidebar-link">03a Hyperboloid Tests</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./testing-avg-transition-prob-curvature.html" class="sidebar-item-text sidebar-link">03b Avg Transition Probability Curvature</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./absolute-curvature-with-laziness.html" class="sidebar-item-text sidebar-link">03c Absolute Curvature with Laziness</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./comparison with ollivier ricci.html" class="sidebar-item-text sidebar-link">03e Ollivier-Ricci Comparison</a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#curvature" id="toc-curvature" class="nav-link active" data-scroll-target="#curvature">curvature</a></li>
+  <li><a href="#examples" id="toc-examples" class="nav-link" data-scroll-target="#examples">Examples</a>
+  <ul>
+  <li><a href="#default-settings" id="toc-default-settings" class="nav-link" data-scroll-target="#default-settings">Default Settings</a></li>
+  <li><a href="#torus-with-adaptive-kernel" id="toc-torus-with-adaptive-kernel" class="nav-link" data-scroll-target="#torus-with-adaptive-kernel">Torus with Adaptive Kernel</a>
+  <ul class="collapse">
+  <li><a href="#without-dynamic-neighborhood-selection" id="toc-without-dynamic-neighborhood-selection" class="nav-link" data-scroll-target="#without-dynamic-neighborhood-selection">Without Dynamic Neighborhood Selection</a></li>
+  </ul></li>
+  <li><a href="#torus-with-adaptive-anisotropic-kernel" id="toc-torus-with-adaptive-anisotropic-kernel" class="nav-link" data-scroll-target="#torus-with-adaptive-anisotropic-kernel">Torus with Adaptive Anisotropic Kernel</a></li>
+  </ul></li>
+  <li><a href="#with-non-lazy-diffusion" id="toc-with-non-lazy-diffusion" class="nav-link" data-scroll-target="#with-non-lazy-diffusion">With Non-lazy Diffusion</a></li>
+  </ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/professorwug/diffusion_curvature/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block">02 “Diffusion Laziness” Curvature</h1>
+</div>
+
+<div>
+  <div class="description">
+    Implementation of diffusion curvature
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<!-- WARNING: THIS FILE WAS AUTOGENERATED! DO NOT EDIT! -->
+<hr>
+<p><a href="https://github.com/professorwug/diffusion_curvature/blob/master/diffusion_curvature/laziness.py#L8" target="_blank" style="float:right; font-size:smaller">source</a></p>
+<section id="curvature" class="level3">
+<h3 class="anchored" data-anchor-id="curvature">curvature</h3>
+<blockquote class="blockquote">
+<pre><code> curvature (P, diffusion_powers=8, aperture=20, smoothing=1,
+            verbose=False, return_density=False,
+            dynamically_adjusting_neighborhood=False,
+            precomputed_powered_P=None, non_lazy_diffusion=False,
+            avg_transition_probability=True, use_min_threshold=False)</code></pre>
+</blockquote>
+<p>Diffusion Laziness Curvature Estimates curvature by measuring the amount of mass remaining within an initial neighborhood after t steps of diffusion. Akin to measuring the laziness of a random walk after t steps.</p>
+<table class="table">
+<colgroup>
+<col style="width: 6%">
+<col style="width: 25%">
+<col style="width: 34%">
+<col style="width: 34%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Default</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>P</td>
+<td>n x n ndarray</td>
+<td></td>
+<td>The diffusion matrix of the graph</td>
+</tr>
+<tr class="even">
+<td>diffusion_powers</td>
+<td>int</td>
+<td>8</td>
+<td>Number of steps of diffusion to take before measuring the laziness, by default 8</td>
+</tr>
+<tr class="odd">
+<td>aperture</td>
+<td>int</td>
+<td>20</td>
+<td>The size of the initial neighborhood, from which the percentage of mass remaining in this neighborhood is calculated, by default 20</td>
+</tr>
+<tr class="even">
+<td>smoothing</td>
+<td>int</td>
+<td>1</td>
+<td>Amount of smoothing to apply. Currently works by multiplying the raw laziness values with the diffusion operator, as a kind of iterated weighted averaging; by default 1</td>
+</tr>
+<tr class="odd">
+<td>verbose</td>
+<td>bool</td>
+<td>False</td>
+<td>Print diagnostics, by default False</td>
+</tr>
+<tr class="even">
+<td>return_density</td>
+<td>bool</td>
+<td>False</td>
+<td>Return the number of neighbors each point shares, by default False</td>
+</tr>
+<tr class="odd">
+<td>dynamically_adjusting_neighborhood</td>
+<td>bool</td>
+<td>False</td>
+<td>Whether to give each point the same initial neighborhood size, by default False</td>
+</tr>
+<tr class="even">
+<td>precomputed_powered_P</td>
+<td>NoneType</td>
+<td>None</td>
+<td>Optionally pass a precomputed powered diffusion operator, to speed up computation, by default None</td>
+</tr>
+<tr class="odd">
+<td>non_lazy_diffusion</td>
+<td>bool</td>
+<td>False</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>avg_transition_probability</td>
+<td>bool</td>
+<td>True</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>use_min_threshold</td>
+<td>bool</td>
+<td>False</td>
+<td></td>
+</tr>
+<tr class="even">
+<td><strong>Returns</strong></td>
+<td><strong>length n array</strong></td>
+<td></td>
+<td><strong>The laziness curvature values for each point</strong></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="examples" class="level1">
+<h1>Examples</h1>
+<section id="default-settings" class="level2">
+<h2 class="anchored" data-anchor-id="default-settings">Default Settings</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>X,ks <span class="op">=</span> torus(n<span class="op">=</span><span class="dv">2000</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>P_anis <span class="op">=</span> DiffusionMatrix(X,kernel_type<span class="op">=</span><span class="st">"adaptive anisotropic"</span>,k<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>plot_3d(X,P_anis[<span class="dv">0</span>],<span class="st">"A single diffusion"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="02_laziness_files/figure-html/cell-4-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p>To compute the curvature of each node, pass the diffusion matrix into the <a href="https://x.riddle.press/diffusion_curvature/laziness.html#curvature"><code>curvature</code></a> function.</p>
+<p>The main parameter to experiment with is <code>diffusion_powers</code>, which specifies how many diffusions should be performed before taking the laziness. If this parameter is too small, the diffusion curvature may resemble density-based noise.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>ks <span class="op">=</span> curvature(P_anis, diffusion_powers<span class="op">=</span><span class="dv">16</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>plot_3d(X,ks,title<span class="op">=</span><span class="st">"Laziness with 32 diffusion powers and aperture 20"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="02_laziness_files/figure-html/cell-5-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+</section>
+<section id="torus-with-adaptive-kernel" class="level2">
+<h2 class="anchored" data-anchor-id="torus-with-adaptive-kernel">Torus with Adaptive Kernel</h2>
+<section id="without-dynamic-neighborhood-selection" class="level3">
+<h3 class="anchored" data-anchor-id="without-dynamic-neighborhood-selection">Without Dynamic Neighborhood Selection</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>X, ks <span class="op">=</span> torus(n<span class="op">=</span><span class="dv">5000</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>P <span class="op">=</span> DiffusionMatrix(X,kernel_type<span class="op">=</span><span class="st">"adaptive"</span>,k<span class="op">=</span><span class="dv">20</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Let’s visualize a single diffusion here:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>plot_3d(X,P[<span class="dv">0</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="02_laziness_files/figure-html/cell-7-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p>Looks fairly good. It’s too small to bleed across the torus, so it should emphasize the step-wise nature of the random-walk laziness calculation.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>ks <span class="op">=</span> curvature(P,diffusion_powers<span class="op">=</span><span class="dv">1</span>,aperture<span class="op">=</span><span class="dv">20</span>,dynamically_adjusting_neighborhood<span class="op">=</span><span class="va">False</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The indication that this method is working is that it <em>doesn’t</em> work for a single power of diffusion, but <em>does</em> work for higher powers of diffusion.</p>
+<p>Any correlation with curvature after a single power of diffusion is accidental – arising from density, or geometry. In the torus, we must be careful, as the number of neighbors included can alone influence the outcome of the laziness – with more neighbors likely to be included in the inside ring of the torus.</p>
+<p>So, here’s the (hopefully) un-correlated single-step laziness.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>plot_3d(X,ks,title<span class="op">=</span><span class="st">"Laziness with 1 diffusion power and aperture 5, with static first neighborhood"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="02_laziness_files/figure-html/cell-9-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p>Here we see some patchy correlation with curvature – it seems that the inside saddle of the torus influences the shape of the diffusion power to the extent that it is noticeable. However, the rest of the torus is spotty.</p>
+<p>Let’s try higher diffusion steps.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>t <span class="op">=</span> <span class="dv">16</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>ks <span class="op">=</span> curvature(P,diffusion_powers<span class="op">=</span>t,aperture<span class="op">=</span><span class="dv">5</span>,dynamically_adjusting_neighborhood<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>plot_3d(X,ks,title<span class="op">=</span><span class="ss">f"Laziness with </span><span class="sc">{</span>t<span class="sc">}</span><span class="ss"> diffusion powers and aperture 5, with static first neighborhood"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="02_laziness_files/figure-html/cell-10-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p>A higher diffusion power has elimated some of the patches, but not all of them.</p>
+<p>This emphasizes that the density variations still contribute to significant local variations in the reported curvature.</p>
+<p>Let’s try a means of addressing this via a fancier kernel.</p>
+</section>
+</section>
+<section id="torus-with-adaptive-anisotropic-kernel" class="level2">
+<h2 class="anchored" data-anchor-id="torus-with-adaptive-anisotropic-kernel">Torus with Adaptive Anisotropic Kernel</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>X,ks <span class="op">=</span> torus(n<span class="op">=</span><span class="dv">5000</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>P_anis <span class="op">=</span> DiffusionMatrix(X,kernel_type<span class="op">=</span><span class="st">"adaptive anisotropic"</span>,k<span class="op">=</span><span class="dv">20</span>)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>plot_3d(X,P_anis[<span class="dv">0</span>],<span class="st">"A single diffusion"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="02_laziness_files/figure-html/cell-11-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p>Let’s see what a single diffusion step looks like here. Theoretically, the density normalization should diminish the initial patterns.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>ks <span class="op">=</span> curvature(P_anis,diffusion_powers<span class="op">=</span><span class="dv">1</span>,aperture<span class="op">=</span><span class="dv">20</span>,dynamically_adjusting_neighborhood<span class="op">=</span><span class="va">False</span>,smoothing<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>plot_3d(X,ks,title<span class="op">=</span><span class="st">"Laziness with 1 diffusion power and aperture 20, with static first neighborhood and NO smoothing (anisotropic)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="02_laziness_files/figure-html/cell-12-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p>Indeed, it anecdotally seems less visible. Here’s the full 16 powers:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>ks <span class="op">=</span> curvature(P_anis,diffusion_powers<span class="op">=</span><span class="dv">1</span>,aperture<span class="op">=</span><span class="dv">20</span>,dynamically_adjusting_neighborhood<span class="op">=</span><span class="va">False</span>,smoothing<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>plot_3d(X,ks,title<span class="op">=</span><span class="st">"Laziness with 16 diffusion powers and aperture 20, with static first neighborhood and NO smoothing (anisotropic)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="02_laziness_files/figure-html/cell-13-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p>Notice that this is much choppier a curvature value than the non-anisotropic adaptive kernel. We need additional powers of diffusion to recover the previous semblance of order.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>ks <span class="op">=</span> curvature(P_anis,diffusion_powers<span class="op">=</span><span class="dv">32</span>,aperture<span class="op">=</span><span class="dv">20</span>,dynamically_adjusting_neighborhood<span class="op">=</span><span class="va">False</span>,smoothing<span class="op">=</span><span class="dv">1</span>, avg_transition_probability<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>plot_3d(X,ks,title<span class="op">=</span><span class="st">"Laziness with 32 diffusion powers and aperture 20, with static first neighborhood and NO smoothing (anisotropic)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="02_laziness_files/figure-html/cell-14-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+</section>
+</section>
+<section id="with-non-lazy-diffusion" class="level1">
+<h1>With Non-lazy Diffusion</h1>
+<p>Set the parameter <code>non_lazy_diffusion</code> to true, and the laziness curvature method will delete the diagonal of self-diffusion, and then renormalize the diffusion matrix. This will motivate the diffusion mass to move, and (one hopes) will reduce the number of steps necessary for the laziness to track with the curvature.</p>
+<p>In order to examine this parameter, we’ll import a method from the future – the “laziness decay graph”. We’ll create a laziness decay graph of the torus with a minimally connected diffusion matrix, with and without non-lazy diffusion.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> diffusion_curvature.laziness_decay <span class="im">import</span> laziness_decay</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>X, ks <span class="op">=</span> torus(n<span class="op">=</span><span class="dv">5000</span>,seed<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>P <span class="op">=</span> DiffusionMatrix(X,kernel_type<span class="op">=</span><span class="st">'adaptive'</span>,k<span class="op">=</span><span class="dv">5</span>)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>decaying_lazy <span class="op">=</span> laziness_decay(P, max_steps<span class="op">=</span><span class="dv">60</span>,aperture<span class="op">=</span><span class="dv">5</span>,adaptive_neighborhood<span class="op">=</span><span class="va">True</span>,non_lazy_diffusion<span class="op">=</span><span class="va">False</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<script type="application/vnd.jupyter.widget-view+json">
+{"model_id":"c00823fe3ca0421b90ca8c09cefc2293","version_major":2,"version_minor":0}
+</script>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>,figsize<span class="op">=</span>(<span class="dv">15</span>,<span class="dv">15</span>))</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>ax.plot(decaying_lazy[<span class="dv">0</span>],color<span class="op">=</span><span class="st">'green'</span>,label<span class="op">=</span><span class="st">'Positive'</span>)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>ax.plot(decaying_lazy[<span class="dv">2</span>],color<span class="op">=</span><span class="st">'blue'</span>,label<span class="op">=</span><span class="st">'Zero'</span>)</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>ax.plot(decaying_lazy[<span class="dv">1</span>],color<span class="op">=</span><span class="st">'red'</span>,label<span class="op">=</span><span class="st">'Negative'</span>)</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>ax.legend()</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">"Without Non-lazy Diffusions"</span>)</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">"Diffusion Time Steps"</span>)</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">"Laziness"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>Text(0, 0.5, 'Laziness')</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="02_laziness_files/figure-html/cell-17-output-2.png" class="img-fluid"></p>
+</div>
+</div>
+<p>Now for the same thing with non-lazy diffusions.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>decaying_lazy <span class="op">=</span> laziness_decay(P, max_steps<span class="op">=</span><span class="dv">60</span>,aperture<span class="op">=</span><span class="dv">5</span>,adaptive_neighborhood<span class="op">=</span><span class="va">True</span>,non_lazy_diffusion<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Removing self-diffusion</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<script type="application/vnd.jupyter.widget-view+json">
+{"model_id":"9ed825dde9994b0b924bd668261bf8b8","version_major":2,"version_minor":0}
+</script>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>,figsize<span class="op">=</span>(<span class="dv">15</span>,<span class="dv">15</span>))</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>ax.plot(decaying_lazy[<span class="dv">0</span>],color<span class="op">=</span><span class="st">'green'</span>,label<span class="op">=</span><span class="st">'Positive'</span>)</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>ax.plot(decaying_lazy[<span class="dv">2</span>],color<span class="op">=</span><span class="st">'blue'</span>,label<span class="op">=</span><span class="st">'Zero'</span>)</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>ax.plot(decaying_lazy[<span class="dv">1</span>],color<span class="op">=</span><span class="st">'red'</span>,label<span class="op">=</span><span class="st">'Negative'</span>)</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>ax.legend()</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">"With Non-Lazy Diffusions"</span>)</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">"Diffusion Time Steps"</span>)</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">"Laziness"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>Text(0, 0.5, 'Laziness')</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="02_laziness_files/figure-html/cell-19-output-2.png" class="img-fluid"></p>
+</div>
+</div>
+<p>Interesting. Removing the self-diffusion has a marked effect on the separation of the three states. It seems to impact negative curvature most, causing it to more rapidly dip below the others from the very first diffusion.</p>
+<p>As might be expected, the contest between zero and positive curvature continues to take longer to resolve, though this method appears to help somewhat.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

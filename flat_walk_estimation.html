@@ -1,0 +1,1471 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.269">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>diffusion_curvature - 02c Flat Walk Estimation for Signed Diffusion Curvature</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+<script src="https://unpkg.com/@jupyter-widgets/html-manager@*/dist/embed-amd.js" crossorigin="anonymous"></script>
+
+
+<link rel="stylesheet" href="styles.css">
+<meta property="og:title" content="diffusion_curvature - 02c Flat Walk Estimation for Signed Diffusion Curvature">
+<meta property="og:description" content="To obtain a signed value, we just need to compare the laziness values obtained on the manifold with the laziness value obtained on a flat manifold of the same dimension and density. If we view">
+<meta property="og:site-name" content="diffusion_curvature">
+<meta name="twitter:title" content="diffusion_curvature - 02c Flat Walk Estimation for Signed Diffusion Curvature">
+<meta name="twitter:description" content="To obtain a signed value, we just need to compare the laziness values obtained on the manifold with the laziness value obtained on a flat manifold of the same dimension and density. If we view">
+<meta name="twitter:card" content="summary">
+</head>
+
+<body class="nav-sidebar floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">diffusion_curvature</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/professorwug/diffusion_curvature"><i class="bi bi-github" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+              <div class="quarto-toggle-container">
+                  <a href="" class="quarto-reader-toggle nav-link" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+              </div>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title">02c Flat Walk Estimation for Signed Diffusion Curvature</h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">diffusion_curvature</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./core.html" class="sidebar-item-text sidebar-link">00 Core Utilities</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./diffusion_curvature_explained.html" class="sidebar-item-text sidebar-link">00a Diffusion Curvature, Explained</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./datasets.html" class="sidebar-item-text sidebar-link">01 Toy Datasets</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./laziness.html" class="sidebar-item-text sidebar-link">02 “Diffusion Laziness” Curvature</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./laziness_decay.html" class="sidebar-item-text sidebar-link">02a Laziness Decay</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./region_limited_laziness.html" class="sidebar-item-text sidebar-link">02b Region Limited Laziness</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./flat_walk_estimation.html" class="sidebar-item-text sidebar-link active">02c Flat Walk Estimation for Signed Diffusion Curvature</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./differentiable_diffusion_curvature.html" class="sidebar-item-text sidebar-link">02d Differentiable Diffusion Curvature</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ground-truth-comparisons.html" class="sidebar-item-text sidebar-link">03 Ground Truth Comparisons</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./hyperboloid-tests.html" class="sidebar-item-text sidebar-link">03a Hyperboloid Tests</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./testing-avg-transition-prob-curvature.html" class="sidebar-item-text sidebar-link">03b Avg Transition Probability Curvature</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./absolute-curvature-with-laziness.html" class="sidebar-item-text sidebar-link">03c Absolute Curvature with Laziness</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./comparison with ollivier ricci.html" class="sidebar-item-text sidebar-link">03e Ollivier-Ricci Comparison</a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#analytic-approach-via-multinomials" id="toc-analytic-approach-via-multinomials" class="nav-link active" data-scroll-target="#analytic-approach-via-multinomials">Analytic Approach via Multinomials</a></li>
+  <li><a href="#testing-against-a-flat-surface" id="toc-testing-against-a-flat-surface" class="nav-link" data-scroll-target="#testing-against-a-flat-surface">Testing Against a Flat Surface</a></li>
+  </ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/professorwug/diffusion_curvature/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block">02c Flat Walk Estimation for Signed Diffusion Curvature</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<!-- WARNING: THIS FILE WAS AUTOGENERATED! DO NOT EDIT! -->
+<section id="analytic-approach-via-multinomials" class="level1">
+<h1>Analytic Approach via Multinomials</h1>
+<p>To obtain a signed value, we just need to compare the laziness values obtained on the manifold with the laziness value obtained on a flat manifold of the same dimension and density. If we view</p>
+<ol type="1">
+<li>diffusion as a binary random walk, and</li>
+<li>approximate any n-d flat manifold, regardless of sampling, by an n-d grid,</li>
+</ol>
+<p>then the average return probability of this random walk can be computed analytically using the multinomial distribution.</p>
+<blockquote class="blockquote">
+<p>! Currently, the value computed is “in the ballpark”, but within a margin of error larger than the discrepancy between positive and negative curvature on the torus.</p>
+</blockquote>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> math</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> multinomial(n,occurences,probs):</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> np.<span class="bu">sum</span>(occurences) <span class="op">==</span> n</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> <span class="bu">len</span>(occurences) <span class="op">==</span> <span class="bu">len</span>(probs)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    factorials <span class="op">=</span> [math.factorial(occ) <span class="cf">for</span> occ <span class="kw">in</span> occurences]</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    factorial_product <span class="op">=</span> np.prod(factorials)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    probs_exp <span class="op">=</span> [probs[i]<span class="op">**</span>occurences[i] <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(occurences))]</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    probs_product <span class="op">=</span> np.prod(probs_exp)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># put it all together</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    pdf <span class="op">=</span> math.factorial(n)<span class="op">/</span>(factorial_product)<span class="op">*</span>probs_product</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> pdf</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>multinomial(<span class="dv">4</span>,[<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">1</span>],[<span class="dv">1</span><span class="op">/</span><span class="dv">3</span>,<span class="dv">1</span><span class="op">/</span><span class="dv">3</span>,<span class="dv">1</span><span class="op">/</span><span class="dv">3</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>0.14814814814814814</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> nchoosek(n,k):</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># generates n!/k! ways of making k choices from n objects</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    chosen <span class="op">=</span> [[i] <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(n)]</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> kk <span class="kw">in</span> <span class="bu">range</span>(k<span class="op">-</span><span class="dv">1</span>):</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>        choosing_now <span class="op">=</span> []</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> nn <span class="kw">in</span> <span class="bu">range</span>(n):</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> p <span class="kw">in</span> chosen:</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>                choosing_now.append(p <span class="op">+</span> [nn])</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>        chosen <span class="op">=</span> choosing_now</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> chosen</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> nchoosek_ordered(n,k):</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    chosen <span class="op">=</span> [[i] <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(n)]</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> kk <span class="kw">in</span> <span class="bu">range</span>(k<span class="op">-</span><span class="dv">1</span>):</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>        choosing_now <span class="op">=</span> []</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> c <span class="kw">in</span> chosen:</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(c[<span class="op">-</span><span class="dv">1</span>],n):</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>                choosing_now.append(c <span class="op">+</span> [i])</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>        chosen <span class="op">=</span> choosing_now</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> chosen</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> partitions(n,k):</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># breaks n into k boxes. Returns a list of possible partitions</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># simpler to assign k-1 box boundaries to the n+1 spots betweeen, before and after the balls</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    prepartitions <span class="op">=</span> nchoosek_ordered(n<span class="op">+</span><span class="dv">1</span>, k <span class="op">-</span> <span class="dv">1</span>) <span class="co"># </span><span class="al">TODO</span><span class="co">: Likely a more efficient implementation exists</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># convert into partitions</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> partition_converter(x):</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="bu">list</span>(<span class="bu">map</span>(<span class="bu">int</span>.<span class="fu">__sub__</span>,(x <span class="op">+</span> [n]),([<span class="dv">0</span>] <span class="op">+</span> x)))</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    partitions <span class="op">=</span> <span class="bu">list</span>(<span class="bu">map</span>(partition_converter,prepartitions))</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> partitions</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> flat_laziness(dimension, num_steps, num_neighbors):</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># calculate parameters for estimation</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    n <span class="op">=</span> num_steps</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    k <span class="op">=</span> dimension<span class="op">*</span><span class="dv">2</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    probs <span class="op">=</span> np.ones(k)<span class="op">/</span>k</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Get partitions of n into k pieces</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    neighborhood_steps <span class="op">=</span> partitions(n,k)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Take only k nearest neighbors</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    neighborhood_steps <span class="op">=</span> np.array(neighborhood_steps)</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    neighb_coordinates <span class="op">=</span> neighborhood_steps[:,:dimension] <span class="op">-</span> neighborhood_steps[:,dimension:]</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(neighb_coordinates)</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>    neighb_distances <span class="op">=</span> np.<span class="bu">sum</span>(np.<span class="bu">abs</span>(neighb_coordinates),axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(neighb_distances)</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"max distance"</span>,<span class="bu">max</span>(neighb_distances))</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"min distance"</span>, <span class="bu">min</span>(neighb_distances))</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>    kth_smallest_distance <span class="op">=</span> np.sort(neighb_distances)[num_neighbors]</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"chosen distance"</span>,kth_smallest_distance)</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>    mask <span class="op">=</span> (neighb_distances <span class="op">&lt;=</span> kth_smallest_distance)</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>    near_neighbor_steps <span class="op">=</span> neighborhood_steps[mask]</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"size of mask "</span>, np.<span class="bu">sum</span>(mask.astype(<span class="bu">int</span>)))</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>    <span class="co"># get probability of walking to each neighbor in the num step radius, sum these, and declare it a laziness value</span></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>    total_prob <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> neighb <span class="kw">in</span> near_neighbor_steps:</span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>        m <span class="op">=</span> multinomial(n, neighb, probs)</span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> m <span class="op">&lt;</span> <span class="dv">0</span>:</span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(m)</span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(neighb)</span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(probs)</span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>        total_prob <span class="op">+=</span> m</span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>    <span class="co"># divide by number of neighbors diffused to</span></span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>    total_prob <span class="op">=</span> total_prob <span class="op">/</span> np.<span class="bu">sum</span>(mask.astype(<span class="bu">int</span>))</span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> total_prob</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>flat_laziness(<span class="dv">3</span>,<span class="dv">8</span>,<span class="op">-</span><span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[[ 0  0 -8]
+ [ 0 -1 -7]
+ [ 0 -2 -6]
+ ...
+ [ 7  0  1]
+ [ 7  1  0]
+ [ 8  0  0]]
+[8 8 8 ... 8 8 8]
+max distance 8
+min distance 0
+chosen distance 8
+size of mask  1287</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<pre><code>0.0007770007770007787</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>X,ks <span class="op">=</span> torus(n<span class="op">=</span><span class="dv">5000</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>P_anis <span class="op">=</span> DiffusionMatrix(X,kernel_type<span class="op">=</span><span class="st">"adaptive anisotropic"</span>,k<span class="op">=</span><span class="dv">20</span>)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>ks <span class="op">=</span> curvature(P_anis,diffusion_powers<span class="op">=</span><span class="dv">8</span>,aperture<span class="op">=</span><span class="dv">20</span>,dynamically_adjusting_neighborhood<span class="op">=</span><span class="va">False</span>,smoothing<span class="op">=</span><span class="dv">1</span>, avg_transition_probability<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>plot_3d(X,ks,title<span class="op">=</span><span class="st">"Laziness with 32 diffusion powers and aperture 20, with static first neighborhood and NO smoothing (anisotropic)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="02c_flat_walk_estimation_files/figure-html/cell-9-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>ks</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>array([0.00313879, 0.00296726, 0.003221  , ..., 0.00289703, 0.00295369,
+       0.00222183])</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>ks_signed <span class="op">=</span> ks <span class="op">-</span> flat_laziness(<span class="dv">2</span>, <span class="dv">8</span>, <span class="dv">20</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[[ 0 -8]
+ [-1 -7]
+ [-2 -6]
+ [-3 -5]
+ [-4 -4]
+ [-5 -3]
+ [-6 -2]
+ [-7 -1]
+ [-8  0]
+ [ 0 -6]
+ [-1 -5]
+ [-2 -4]
+ [-3 -3]
+ [-4 -2]
+ [-5 -1]
+ [-6  0]
+ [-7  1]
+ [ 0 -4]
+ [-1 -3]
+ [-2 -2]
+ [-3 -1]
+ [-4  0]
+ [-5  1]
+ [-6  2]
+ [ 0 -2]
+ [-1 -1]
+ [-2  0]
+ [-3  1]
+ [-4  2]
+ [-5  3]
+ [ 0  0]
+ [-1  1]
+ [-2  2]
+ [-3  3]
+ [-4  4]
+ [ 0  2]
+ [-1  3]
+ [-2  4]
+ [-3  5]
+ [ 0  4]
+ [-1  5]
+ [-2  6]
+ [ 0  6]
+ [-1  7]
+ [ 0  8]
+ [ 1 -7]
+ [ 0 -6]
+ [-1 -5]
+ [-2 -4]
+ [-3 -3]
+ [-4 -2]
+ [-5 -1]
+ [-6  0]
+ [ 1 -5]
+ [ 0 -4]
+ [-1 -3]
+ [-2 -2]
+ [-3 -1]
+ [-4  0]
+ [-5  1]
+ [ 1 -3]
+ [ 0 -2]
+ [-1 -1]
+ [-2  0]
+ [-3  1]
+ [-4  2]
+ [ 1 -1]
+ [ 0  0]
+ [-1  1]
+ [-2  2]
+ [-3  3]
+ [ 1  1]
+ [ 0  2]
+ [-1  3]
+ [-2  4]
+ [ 1  3]
+ [ 0  4]
+ [-1  5]
+ [ 1  5]
+ [ 0  6]
+ [ 1  7]
+ [ 2 -6]
+ [ 1 -5]
+ [ 0 -4]
+ [-1 -3]
+ [-2 -2]
+ [-3 -1]
+ [-4  0]
+ [ 2 -4]
+ [ 1 -3]
+ [ 0 -2]
+ [-1 -1]
+ [-2  0]
+ [-3  1]
+ [ 2 -2]
+ [ 1 -1]
+ [ 0  0]
+ [-1  1]
+ [-2  2]
+ [ 2  0]
+ [ 1  1]
+ [ 0  2]
+ [-1  3]
+ [ 2  2]
+ [ 1  3]
+ [ 0  4]
+ [ 2  4]
+ [ 1  5]
+ [ 2  6]
+ [ 3 -5]
+ [ 2 -4]
+ [ 1 -3]
+ [ 0 -2]
+ [-1 -1]
+ [-2  0]
+ [ 3 -3]
+ [ 2 -2]
+ [ 1 -1]
+ [ 0  0]
+ [-1  1]
+ [ 3 -1]
+ [ 2  0]
+ [ 1  1]
+ [ 0  2]
+ [ 3  1]
+ [ 2  2]
+ [ 1  3]
+ [ 3  3]
+ [ 2  4]
+ [ 3  5]
+ [ 4 -4]
+ [ 3 -3]
+ [ 2 -2]
+ [ 1 -1]
+ [ 0  0]
+ [ 4 -2]
+ [ 3 -1]
+ [ 2  0]
+ [ 1  1]
+ [ 4  0]
+ [ 3  1]
+ [ 2  2]
+ [ 4  2]
+ [ 3  3]
+ [ 4  4]
+ [ 5 -3]
+ [ 4 -2]
+ [ 3 -1]
+ [ 2  0]
+ [ 5 -1]
+ [ 4  0]
+ [ 3  1]
+ [ 5  1]
+ [ 4  2]
+ [ 5  3]
+ [ 6 -2]
+ [ 5 -1]
+ [ 4  0]
+ [ 6  0]
+ [ 5  1]
+ [ 6  2]
+ [ 7 -1]
+ [ 6  0]
+ [ 7  1]
+ [ 8  0]]
+[8 8 8 8 8 8 8 8 8 6 6 6 6 6 6 6 8 4 4 4 4 4 6 8 2 2 2 4 6 8 0 2 4 6 8 2 4
+ 6 8 4 6 8 6 8 8 8 6 6 6 6 6 6 6 6 4 4 4 4 4 6 4 2 2 2 4 6 2 0 2 4 6 2 2 4
+ 6 4 4 6 6 6 8 8 6 4 4 4 4 4 6 4 2 2 2 4 4 2 0 2 4 2 2 2 4 4 4 4 6 6 8 8 6
+ 4 2 2 2 6 4 2 0 2 4 2 2 2 4 4 4 6 6 8 8 6 4 2 0 6 4 2 2 4 4 4 6 6 8 8 6 4
+ 2 6 4 4 6 6 8 8 6 4 6 6 8 8 6 8 8]
+max distance 8
+min distance 0
+chosen distance 2
+size of mask  37</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>flat_laziness(<span class="dv">2</span>, <span class="dv">8</span>, <span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[[ 0 -8]
+ [-1 -7]
+ [-2 -6]
+ [-3 -5]
+ [-4 -4]
+ [-5 -3]
+ [-6 -2]
+ [-7 -1]
+ [-8  0]
+ [ 0 -6]
+ [-1 -5]
+ [-2 -4]
+ [-3 -3]
+ [-4 -2]
+ [-5 -1]
+ [-6  0]
+ [-7  1]
+ [ 0 -4]
+ [-1 -3]
+ [-2 -2]
+ [-3 -1]
+ [-4  0]
+ [-5  1]
+ [-6  2]
+ [ 0 -2]
+ [-1 -1]
+ [-2  0]
+ [-3  1]
+ [-4  2]
+ [-5  3]
+ [ 0  0]
+ [-1  1]
+ [-2  2]
+ [-3  3]
+ [-4  4]
+ [ 0  2]
+ [-1  3]
+ [-2  4]
+ [-3  5]
+ [ 0  4]
+ [-1  5]
+ [-2  6]
+ [ 0  6]
+ [-1  7]
+ [ 0  8]
+ [ 1 -7]
+ [ 0 -6]
+ [-1 -5]
+ [-2 -4]
+ [-3 -3]
+ [-4 -2]
+ [-5 -1]
+ [-6  0]
+ [ 1 -5]
+ [ 0 -4]
+ [-1 -3]
+ [-2 -2]
+ [-3 -1]
+ [-4  0]
+ [-5  1]
+ [ 1 -3]
+ [ 0 -2]
+ [-1 -1]
+ [-2  0]
+ [-3  1]
+ [-4  2]
+ [ 1 -1]
+ [ 0  0]
+ [-1  1]
+ [-2  2]
+ [-3  3]
+ [ 1  1]
+ [ 0  2]
+ [-1  3]
+ [-2  4]
+ [ 1  3]
+ [ 0  4]
+ [-1  5]
+ [ 1  5]
+ [ 0  6]
+ [ 1  7]
+ [ 2 -6]
+ [ 1 -5]
+ [ 0 -4]
+ [-1 -3]
+ [-2 -2]
+ [-3 -1]
+ [-4  0]
+ [ 2 -4]
+ [ 1 -3]
+ [ 0 -2]
+ [-1 -1]
+ [-2  0]
+ [-3  1]
+ [ 2 -2]
+ [ 1 -1]
+ [ 0  0]
+ [-1  1]
+ [-2  2]
+ [ 2  0]
+ [ 1  1]
+ [ 0  2]
+ [-1  3]
+ [ 2  2]
+ [ 1  3]
+ [ 0  4]
+ [ 2  4]
+ [ 1  5]
+ [ 2  6]
+ [ 3 -5]
+ [ 2 -4]
+ [ 1 -3]
+ [ 0 -2]
+ [-1 -1]
+ [-2  0]
+ [ 3 -3]
+ [ 2 -2]
+ [ 1 -1]
+ [ 0  0]
+ [-1  1]
+ [ 3 -1]
+ [ 2  0]
+ [ 1  1]
+ [ 0  2]
+ [ 3  1]
+ [ 2  2]
+ [ 1  3]
+ [ 3  3]
+ [ 2  4]
+ [ 3  5]
+ [ 4 -4]
+ [ 3 -3]
+ [ 2 -2]
+ [ 1 -1]
+ [ 0  0]
+ [ 4 -2]
+ [ 3 -1]
+ [ 2  0]
+ [ 1  1]
+ [ 4  0]
+ [ 3  1]
+ [ 2  2]
+ [ 4  2]
+ [ 3  3]
+ [ 4  4]
+ [ 5 -3]
+ [ 4 -2]
+ [ 3 -1]
+ [ 2  0]
+ [ 5 -1]
+ [ 4  0]
+ [ 3  1]
+ [ 5  1]
+ [ 4  2]
+ [ 5  3]
+ [ 6 -2]
+ [ 5 -1]
+ [ 4  0]
+ [ 6  0]
+ [ 5  1]
+ [ 6  2]
+ [ 7 -1]
+ [ 6  0]
+ [ 7  1]
+ [ 8  0]]
+[8 8 8 8 8 8 8 8 8 6 6 6 6 6 6 6 8 4 4 4 4 4 6 8 2 2 2 4 6 8 0 2 4 6 8 2 4
+ 6 8 4 6 8 6 8 8 8 6 6 6 6 6 6 6 6 4 4 4 4 4 6 4 2 2 2 4 6 2 0 2 4 6 2 2 4
+ 6 4 4 6 6 6 8 8 6 4 4 4 4 4 6 4 2 2 2 4 4 2 0 2 4 2 2 2 4 4 4 4 6 6 8 8 6
+ 4 2 2 2 6 4 2 0 2 4 2 2 2 4 4 4 6 6 8 8 6 4 2 0 6 4 2 2 4 4 4 6 6 8 8 6 4
+ 2 6 4 4 6 6 8 8 6 4 6 6 8 8 6 8 8]
+max distance 8
+min distance 0
+chosen distance 2
+size of mask  37</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<pre><code>0.013660327808277027</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>plot_3d(X,ks_signed,title<span class="op">=</span><span class="st">"signed curvature"</span>,use_plotly<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>Unable to display output for mime type(s): application/vnd.plotly.v1+json</code></pre>
+</div>
+</div>
+</section>
+<section id="testing-against-a-flat-surface" class="level1">
+<h1>Testing Against a Flat Surface</h1>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>flat_space <span class="op">=</span> np.random.rand(<span class="dv">1000</span>,<span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>P_anis <span class="op">=</span> DiffusionMatrix(flat_space,kernel_type<span class="op">=</span><span class="st">"adaptive anisotropic"</span>,k<span class="op">=</span><span class="dv">20</span>)</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>ks <span class="op">=</span> curvature(P_anis,diffusion_powers<span class="op">=</span><span class="dv">8</span>,aperture<span class="op">=</span><span class="dv">20</span>,dynamically_adjusting_neighborhood<span class="op">=</span><span class="va">False</span>,smoothing<span class="op">=</span><span class="va">False</span>, avg_transition_probability<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>ks</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>array([0.00101597, 0.00100743, 0.00101875, 0.00101372, 0.0010271 ,
+       0.0010247 , 0.00105484, 0.00103491, 0.00102798, 0.00101607,
+       0.0010523 , 0.00101673, 0.00101813, 0.00100786, 0.00103298,
+       0.00100518, 0.00100793, 0.0010198 , 0.00099432, 0.00104294,
+       0.0010167 , 0.00104702, 0.00103171, 0.00103375, 0.00104376,
+       0.00102153, 0.00102679, 0.00103206, 0.00102229, 0.00099214,
+       0.0010199 , 0.00105934, 0.00104166, 0.00103537, 0.00098701,
+       0.0010462 , 0.        , 0.00101878, 0.        , 0.00104656,
+       0.00103373, 0.00103072, 0.00103392, 0.00101623, 0.00104294,
+       0.001021  , 0.00101566, 0.00103109, 0.0010323 , 0.00104467,
+       0.00104851, 0.00103032, 0.00102083, 0.00104803, 0.00103213,
+       0.00103303, 0.00103893, 0.        , 0.00102655, 0.        ,
+       0.00103059, 0.        , 0.00100728, 0.00105193, 0.00101402,
+       0.00105131, 0.0010234 , 0.00104054, 0.00103094, 0.00104015,
+       0.00102016, 0.00103698, 0.00101904, 0.00102567, 0.00104341,
+       0.        , 0.00102772, 0.        , 0.0010438 , 0.00102462,
+       0.00104907, 0.00103215, 0.00101398, 0.00103094, 0.        ,
+       0.0010497 , 0.00101543, 0.0010406 , 0.00102224, 0.00101935,
+       0.00103003, 0.00104639, 0.00100246, 0.        , 0.00100726,
+       0.00102827, 0.00104261, 0.00102835, 0.00097787, 0.00102635,
+       0.00100527, 0.00102   , 0.00100881, 0.00101011, 0.00106216,
+       0.00101246, 0.00101774, 0.00101844, 0.00103108, 0.00101377,
+       0.00105834, 0.00102228, 0.00104234, 0.00103078, 0.00104642,
+       0.00099705, 0.00099715, 0.00100494, 0.00102309, 0.00103232,
+       0.00106104, 0.00103288, 0.00105362, 0.00100921, 0.00102986,
+       0.00103312, 0.        , 0.00099807, 0.00099378, 0.00100776,
+       0.        , 0.        , 0.00104528, 0.00101763, 0.00102574,
+       0.00103002, 0.00100068, 0.00103491, 0.00101873, 0.00102909,
+       0.00103081, 0.00100832, 0.00104541, 0.0010586 , 0.        ,
+       0.00103495, 0.0010316 , 0.        , 0.00101998, 0.        ,
+       0.00104504, 0.00100031, 0.00101566, 0.00101568, 0.00102226,
+       0.00102984, 0.00100462, 0.00102738, 0.        , 0.        ,
+       0.00100535, 0.00101896, 0.00103867, 0.00100832, 0.00102956,
+       0.        , 0.00102131, 0.0010455 , 0.0010568 , 0.00102218,
+       0.00103027, 0.00098542, 0.        , 0.00103484, 0.        ,
+       0.0010267 , 0.00104309, 0.00100602, 0.        , 0.        ,
+       0.00104153, 0.00100923, 0.00105844, 0.00102602, 0.00100273,
+       0.00102046, 0.00104072, 0.00103334, 0.00103399, 0.00094232,
+       0.00101056, 0.        , 0.00101833, 0.00103291, 0.0010033 ,
+       0.00103839, 0.        , 0.00101011, 0.00101865, 0.0010548 ,
+       0.00101507, 0.00104863, 0.00104582, 0.0010365 , 0.00101652,
+       0.        , 0.00101998, 0.00103765, 0.00102052, 0.00102655,
+       0.        , 0.00100955, 0.00102409, 0.00104743, 0.        ,
+       0.00102212, 0.00101181, 0.00102462, 0.00104742, 0.        ,
+       0.00095772, 0.00100399, 0.00102529, 0.0010203 , 0.00103391,
+       0.00101075, 0.00103716, 0.00101753, 0.00103236, 0.00104356,
+       0.00100779, 0.00099653, 0.00100693, 0.00102111, 0.00104987,
+       0.00102515, 0.00102153, 0.00101444, 0.0009934 , 0.00104391,
+       0.00103155, 0.00102671, 0.00100883, 0.0010288 , 0.00102292,
+       0.00104864, 0.00103398, 0.00102811, 0.00100848, 0.00099629,
+       0.        , 0.00103683, 0.00103536, 0.00101376, 0.00102256,
+       0.00101933, 0.0010332 , 0.00101632, 0.00104136, 0.00102398,
+       0.00102016, 0.00103015, 0.00101069, 0.00104025, 0.0010052 ,
+       0.00098843, 0.        , 0.00106216, 0.00100327, 0.00102349,
+       0.00104125, 0.00101356, 0.00102388, 0.00104102, 0.00101525,
+       0.00102184, 0.00096574, 0.        , 0.00103982, 0.00099933,
+       0.00100124, 0.        , 0.00102742, 0.00102238, 0.00104485,
+       0.00101089, 0.0010367 , 0.00101125, 0.00102542, 0.00101984,
+       0.00101268, 0.        , 0.00100491, 0.00101596, 0.0010288 ,
+       0.        , 0.00103292, 0.00105008, 0.        , 0.00105122,
+       0.        , 0.00099142, 0.00102875, 0.00100987, 0.0010229 ,
+       0.00106587, 0.00104067, 0.        , 0.00103529, 0.00102124,
+       0.00096125, 0.00100263, 0.00102119, 0.0010176 , 0.00103066,
+       0.00103449, 0.00105654, 0.00102474, 0.0010143 , 0.00105321,
+       0.00099433, 0.00101404, 0.00103134, 0.0010256 , 0.00100776,
+       0.00103187, 0.00105019, 0.00100517, 0.00101342, 0.00101678,
+       0.00102491, 0.00102664, 0.        , 0.        , 0.00101036,
+       0.00101003, 0.00102501, 0.00101713, 0.00105256, 0.0010067 ,
+       0.00101642, 0.00104072, 0.00104663, 0.0010329 , 0.00100851,
+       0.00100955, 0.        , 0.00100985, 0.00101946, 0.00105805,
+       0.00100006, 0.00098135, 0.00103722, 0.00098761, 0.0010137 ,
+       0.00102628, 0.00101023, 0.00099684, 0.00104649, 0.00104815,
+       0.00103121, 0.00103922, 0.00106063, 0.00104928, 0.00097385,
+       0.00100089, 0.00102204, 0.00099132, 0.        , 0.00100674,
+       0.00102477, 0.00098894, 0.00104008, 0.00103076, 0.00097662,
+       0.        , 0.00103141, 0.        , 0.00101995, 0.00102948,
+       0.00099999, 0.00100889, 0.00104586, 0.00102578, 0.00094016,
+       0.00101625, 0.00105475, 0.00102474, 0.0010476 , 0.00104425,
+       0.00102485, 0.        , 0.00099816, 0.0010347 , 0.0010295 ,
+       0.00104593, 0.00103351, 0.00103049, 0.00101836, 0.        ,
+       0.00101203, 0.        , 0.00103724, 0.00100409, 0.00104009,
+       0.00104234, 0.0010498 , 0.00103131, 0.0010304 , 0.00099124,
+       0.00102667, 0.00097078, 0.0010187 , 0.00100887, 0.00102308,
+       0.00101866, 0.00102397, 0.00101771, 0.        , 0.00102945,
+       0.00097813, 0.0010138 , 0.00101662, 0.00102406, 0.00102391,
+       0.00103285, 0.00103273, 0.        , 0.00103783, 0.00103044,
+       0.00105902, 0.00103481, 0.00101781, 0.00100097, 0.        ,
+       0.00102045, 0.00104821, 0.00105259, 0.00104812, 0.0009821 ,
+       0.00102134, 0.00099754, 0.        , 0.0010151 , 0.00102849,
+       0.00100382, 0.00104013, 0.00104941, 0.00102708, 0.00104633,
+       0.0010121 , 0.00102714, 0.00102849, 0.00100943, 0.00102705,
+       0.00102112, 0.00101177, 0.00102153, 0.00101571, 0.00102699,
+       0.00102265, 0.00103432, 0.0010268 , 0.0010248 , 0.00101437,
+       0.00104251, 0.        , 0.00103004, 0.00104359, 0.00101142,
+       0.00102373, 0.00102738, 0.00101299, 0.00101188, 0.00105037,
+       0.        , 0.        , 0.00098995, 0.00103508, 0.00104251,
+       0.00101553, 0.00101861, 0.00103008, 0.00102866, 0.00102693,
+       0.00100466, 0.00105588, 0.00100396, 0.00103315, 0.00103063,
+       0.00101165, 0.00101888, 0.00103126, 0.0010152 , 0.00101176,
+       0.00104084, 0.00103757, 0.00101139, 0.00103292, 0.00105162,
+       0.00103237, 0.00100421, 0.00099045, 0.00104773, 0.00103322,
+       0.0010191 , 0.00104726, 0.00102492, 0.00102267, 0.00101592,
+       0.00099196, 0.00099809, 0.00101474, 0.00101938, 0.        ,
+       0.00106031, 0.        , 0.00103   , 0.00100296, 0.        ,
+       0.00100424, 0.00102721, 0.00100859, 0.00105921, 0.00102014,
+       0.00104278, 0.0010189 , 0.00103324, 0.        , 0.00103677,
+       0.00100555, 0.00100768, 0.0010375 , 0.00100459, 0.        ,
+       0.0010288 , 0.00099951, 0.        , 0.0010547 , 0.00102503,
+       0.00100548, 0.00099043, 0.        , 0.00103693, 0.00103288,
+       0.00104521, 0.        , 0.00103741, 0.00100334, 0.        ,
+       0.00098402, 0.00102933, 0.00100895, 0.00102024, 0.00103015,
+       0.00103066, 0.00101922, 0.00102052, 0.00101125, 0.00102595,
+       0.00099441, 0.00101945, 0.00104624, 0.00102108, 0.00102192,
+       0.00103685, 0.00102952, 0.00104874, 0.0010276 , 0.00100477,
+       0.00099821, 0.00101527, 0.        , 0.00101572, 0.00100645,
+       0.00101075, 0.00103927, 0.00105097, 0.00102867, 0.00102824,
+       0.00100786, 0.00101532, 0.00101865, 0.00103692, 0.00100349,
+       0.00102808, 0.00104014, 0.00101704, 0.00102585, 0.00104388,
+       0.00103541, 0.00104944, 0.00102103, 0.00101133, 0.00101267,
+       0.00103782, 0.00105174, 0.00100786, 0.0010311 , 0.0010328 ,
+       0.001026  , 0.00103971, 0.00099797, 0.00103085, 0.00102066,
+       0.00102286, 0.00102929, 0.00101442, 0.00100731, 0.0010198 ,
+       0.0010322 , 0.00100028, 0.00102169, 0.00100244, 0.0010234 ,
+       0.00102327, 0.00096803, 0.00102402, 0.00101642, 0.00104615,
+       0.00103263, 0.00104448, 0.00102982, 0.00103857, 0.        ,
+       0.00102567, 0.00097483, 0.00100963, 0.00101232, 0.        ,
+       0.00103234, 0.00102142, 0.00101553, 0.00099336, 0.00102262,
+       0.00101622, 0.0010127 , 0.        , 0.00104148, 0.00105075,
+       0.00102351, 0.00102011, 0.00104361, 0.00104867, 0.00102136,
+       0.00101849, 0.        , 0.00100369, 0.00100146, 0.00104154,
+       0.00103691, 0.0010313 , 0.00099014, 0.00103464, 0.00098469,
+       0.        , 0.        , 0.00105468, 0.00099658, 0.00103916,
+       0.00103405, 0.00102656, 0.00098421, 0.0010292 , 0.00103876,
+       0.        , 0.00099353, 0.00104544, 0.00100503, 0.00102733,
+       0.00102622, 0.00102148, 0.0010308 , 0.00101539, 0.0010014 ,
+       0.0010028 , 0.00103167, 0.        , 0.00100866, 0.        ,
+       0.00103812, 0.00102721, 0.00102889, 0.00102283, 0.00103159,
+       0.00105363, 0.0010572 , 0.00103192, 0.00104709, 0.00104838,
+       0.0010498 , 0.0010165 , 0.00101712, 0.00104468, 0.00102186,
+       0.00101122, 0.00102409, 0.00103603, 0.00104503, 0.00104947,
+       0.00101782, 0.00103685, 0.00103513, 0.00102556, 0.00097845,
+       0.00102757, 0.0010656 , 0.00101588, 0.00101899, 0.00101886,
+       0.00104883, 0.00104672, 0.00101124, 0.00102691, 0.00103906,
+       0.00102507, 0.00104103, 0.00102524, 0.        , 0.00102169,
+       0.00104938, 0.        , 0.        , 0.00103128, 0.00103259,
+       0.00102155, 0.00104193, 0.0010305 , 0.00099824, 0.0010546 ,
+       0.00101653, 0.00099145, 0.00103564, 0.00099899, 0.0010638 ,
+       0.00101727, 0.00101657, 0.0010214 , 0.00103114, 0.00102395,
+       0.00100241, 0.        , 0.0009908 , 0.00105237, 0.00100778,
+       0.00098971, 0.00099006, 0.00104827, 0.00100931, 0.00102898,
+       0.00105093, 0.00104572, 0.00102057, 0.00101525, 0.00102213,
+       0.00101469, 0.00104803, 0.        , 0.001026  , 0.00102841,
+       0.00101214, 0.00104026, 0.00101355, 0.0010111 , 0.        ,
+       0.00101945, 0.00104231, 0.00100851, 0.        , 0.00104055,
+       0.00101144, 0.0010146 , 0.00100731, 0.00101602, 0.00104135,
+       0.0010354 , 0.00102715, 0.00101543, 0.00102429, 0.        ,
+       0.00104353, 0.00100583, 0.00102051, 0.        , 0.        ,
+       0.00100717, 0.00103775, 0.00101599, 0.        , 0.00104493,
+       0.00102985, 0.00095675, 0.00101222, 0.00103428, 0.00102353,
+       0.00100935, 0.00103435, 0.00102127, 0.00102709, 0.00103898,
+       0.00101253, 0.00104061, 0.00105343, 0.00099507, 0.        ,
+       0.00104673, 0.00098003, 0.00101876, 0.00101432, 0.0010446 ,
+       0.00101178, 0.00104049, 0.0010164 , 0.00103035, 0.00104749,
+       0.0010088 , 0.00101369, 0.00102703, 0.00102326, 0.0010193 ,
+       0.00102417, 0.00105162, 0.00105652, 0.00103584, 0.00102787,
+       0.00099828, 0.00103986, 0.00103888, 0.00103673, 0.00102942,
+       0.00101428, 0.00105015, 0.0010181 , 0.00102529, 0.00105894,
+       0.00102685, 0.        , 0.00102256, 0.00101592, 0.00095658,
+       0.00100602, 0.00104006, 0.00103908, 0.00104845, 0.00105984,
+       0.00104494, 0.00105882, 0.00101778, 0.00104347, 0.00105168,
+       0.00099697, 0.00102021, 0.00101617, 0.00105327, 0.00104532,
+       0.        , 0.00101944, 0.00105276, 0.00100621, 0.00102733,
+       0.00103875, 0.00099614, 0.00101215, 0.00106239, 0.00099293,
+       0.00102289, 0.00102108, 0.00097431, 0.00103283, 0.00093931,
+       0.00104978, 0.00104052, 0.0010175 , 0.00101385, 0.00105634,
+       0.00105854, 0.0010193 , 0.00101117, 0.00101285, 0.00103891,
+       0.00105083, 0.00104345, 0.00102961, 0.00103947, 0.00103672,
+       0.00104801, 0.0010278 , 0.00105151, 0.00100117, 0.00102499,
+       0.00103491, 0.        , 0.0010095 , 0.00103008, 0.0010347 ,
+       0.00101096, 0.00103187, 0.0010485 , 0.00104132, 0.00103899,
+       0.00102728, 0.00102552, 0.        , 0.00103859, 0.        ,
+       0.00101507, 0.00103373, 0.00098707, 0.00101823, 0.00101939,
+       0.00103056, 0.00102733, 0.        , 0.00102593, 0.00100445,
+       0.00105851, 0.00103606, 0.00105504, 0.00101591, 0.00104535,
+       0.00104158, 0.0010232 , 0.00100587, 0.        , 0.00104256,
+       0.00104579, 0.00100292, 0.00102228, 0.00105379, 0.00101174,
+       0.00101031, 0.00105083, 0.00098985, 0.00104959, 0.00102589,
+       0.00102917, 0.00095689, 0.00100786, 0.00101891, 0.        ,
+       0.00102152, 0.0010381 , 0.00101739, 0.00103815, 0.00103913,
+       0.00101981, 0.        , 0.00103475, 0.0010179 , 0.00104159,
+       0.0010318 , 0.00101584, 0.00103314, 0.00105389, 0.00102096,
+       0.00105939, 0.00100698, 0.00104089, 0.00100523, 0.0010241 ,
+       0.        , 0.        , 0.00105819, 0.00102713, 0.        ,
+       0.00101248, 0.00102547, 0.00099292, 0.00100459, 0.0010174 ,
+       0.00099445, 0.00100237, 0.00101496, 0.00102524, 0.        ,
+       0.00104025, 0.00101583, 0.00101673, 0.00105512, 0.0010362 ,
+       0.00103278, 0.0010377 , 0.0010465 , 0.        , 0.00100375,
+       0.00094304, 0.00100002, 0.00105342, 0.00102642, 0.0010311 ,
+       0.        , 0.00102283, 0.00102494, 0.00101445, 0.00102369,
+       0.00100324, 0.00100673, 0.0010007 , 0.0010452 , 0.0010225 ])</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>np.mean(ks)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>0.000922881921222707</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>flat_laziness(<span class="dv">5</span>, <span class="dv">8</span>, <span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[[ 0  0  0  0 -8]
+ [ 0  0  0 -1 -7]
+ [ 0  0  0 -2 -6]
+ ...
+ [ 7  0  1  0  0]
+ [ 7  1  0  0  0]
+ [ 8  0  0  0  0]]
+[8 8 8 ... 8 8 8]
+max distance 8
+min distance 0
+chosen distance 0
+size of mask  70</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<pre><code>7.885000000000006e-05</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tqdm.notebook <span class="im">import</span> trange</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>flats <span class="op">=</span> []</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>lses <span class="op">=</span> []</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> dim <span class="kw">in</span> trange(<span class="dv">2</span>,<span class="dv">10</span>):</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>    flat_space <span class="op">=</span> np.random.rand(<span class="dv">1000</span>,dim)</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>    P_anis <span class="op">=</span> DiffusionMatrix(flat_space,kernel_type<span class="op">=</span><span class="st">"adaptive anisotropic"</span>,k<span class="op">=</span><span class="dv">20</span>)</span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>    ls <span class="op">=</span> curvature(P_anis,diffusion_powers<span class="op">=</span><span class="dv">8</span>,aperture<span class="op">=</span><span class="dv">20</span>,dynamically_adjusting_neighborhood<span class="op">=</span><span class="va">False</span>,smoothing<span class="op">=</span><span class="va">False</span>, avg_transition_probability<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>    mean_ls <span class="op">=</span> np.mean(ls)</span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>    lses.append(mean_ls)</span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>    flat_ls <span class="op">=</span> flat_laziness(dim, <span class="dv">8</span>, <span class="dv">10</span>)</span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>    flats.append(flat_ls)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<script type="application/vnd.jupyter.widget-view+json">
+{"model_id":"8cba8f4e3f1541c0a84efa78679da5ac","version_major":2,"version_minor":0}
+</script>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[[ 0 -8]
+ [-1 -7]
+ [-2 -6]
+ [-3 -5]
+ [-4 -4]
+ [-5 -3]
+ [-6 -2]
+ [-7 -1]
+ [-8  0]
+ [ 0 -6]
+ [-1 -5]
+ [-2 -4]
+ [-3 -3]
+ [-4 -2]
+ [-5 -1]
+ [-6  0]
+ [-7  1]
+ [ 0 -4]
+ [-1 -3]
+ [-2 -2]
+ [-3 -1]
+ [-4  0]
+ [-5  1]
+ [-6  2]
+ [ 0 -2]
+ [-1 -1]
+ [-2  0]
+ [-3  1]
+ [-4  2]
+ [-5  3]
+ [ 0  0]
+ [-1  1]
+ [-2  2]
+ [-3  3]
+ [-4  4]
+ [ 0  2]
+ [-1  3]
+ [-2  4]
+ [-3  5]
+ [ 0  4]
+ [-1  5]
+ [-2  6]
+ [ 0  6]
+ [-1  7]
+ [ 0  8]
+ [ 1 -7]
+ [ 0 -6]
+ [-1 -5]
+ [-2 -4]
+ [-3 -3]
+ [-4 -2]
+ [-5 -1]
+ [-6  0]
+ [ 1 -5]
+ [ 0 -4]
+ [-1 -3]
+ [-2 -2]
+ [-3 -1]
+ [-4  0]
+ [-5  1]
+ [ 1 -3]
+ [ 0 -2]
+ [-1 -1]
+ [-2  0]
+ [-3  1]
+ [-4  2]
+ [ 1 -1]
+ [ 0  0]
+ [-1  1]
+ [-2  2]
+ [-3  3]
+ [ 1  1]
+ [ 0  2]
+ [-1  3]
+ [-2  4]
+ [ 1  3]
+ [ 0  4]
+ [-1  5]
+ [ 1  5]
+ [ 0  6]
+ [ 1  7]
+ [ 2 -6]
+ [ 1 -5]
+ [ 0 -4]
+ [-1 -3]
+ [-2 -2]
+ [-3 -1]
+ [-4  0]
+ [ 2 -4]
+ [ 1 -3]
+ [ 0 -2]
+ [-1 -1]
+ [-2  0]
+ [-3  1]
+ [ 2 -2]
+ [ 1 -1]
+ [ 0  0]
+ [-1  1]
+ [-2  2]
+ [ 2  0]
+ [ 1  1]
+ [ 0  2]
+ [-1  3]
+ [ 2  2]
+ [ 1  3]
+ [ 0  4]
+ [ 2  4]
+ [ 1  5]
+ [ 2  6]
+ [ 3 -5]
+ [ 2 -4]
+ [ 1 -3]
+ [ 0 -2]
+ [-1 -1]
+ [-2  0]
+ [ 3 -3]
+ [ 2 -2]
+ [ 1 -1]
+ [ 0  0]
+ [-1  1]
+ [ 3 -1]
+ [ 2  0]
+ [ 1  1]
+ [ 0  2]
+ [ 3  1]
+ [ 2  2]
+ [ 1  3]
+ [ 3  3]
+ [ 2  4]
+ [ 3  5]
+ [ 4 -4]
+ [ 3 -3]
+ [ 2 -2]
+ [ 1 -1]
+ [ 0  0]
+ [ 4 -2]
+ [ 3 -1]
+ [ 2  0]
+ [ 1  1]
+ [ 4  0]
+ [ 3  1]
+ [ 2  2]
+ [ 4  2]
+ [ 3  3]
+ [ 4  4]
+ [ 5 -3]
+ [ 4 -2]
+ [ 3 -1]
+ [ 2  0]
+ [ 5 -1]
+ [ 4  0]
+ [ 3  1]
+ [ 5  1]
+ [ 4  2]
+ [ 5  3]
+ [ 6 -2]
+ [ 5 -1]
+ [ 4  0]
+ [ 6  0]
+ [ 5  1]
+ [ 6  2]
+ [ 7 -1]
+ [ 6  0]
+ [ 7  1]
+ [ 8  0]]
+[8 8 8 8 8 8 8 8 8 6 6 6 6 6 6 6 8 4 4 4 4 4 6 8 2 2 2 4 6 8 0 2 4 6 8 2 4
+ 6 8 4 6 8 6 8 8 8 6 6 6 6 6 6 6 6 4 4 4 4 4 6 4 2 2 2 4 6 2 0 2 4 6 2 2 4
+ 6 4 4 6 6 6 8 8 6 4 4 4 4 4 6 4 2 2 2 4 4 2 0 2 4 2 2 2 4 4 4 4 6 6 8 8 6
+ 4 2 2 2 6 4 2 0 2 4 2 2 2 4 4 4 6 6 8 8 6 4 2 0 6 4 2 2 4 4 4 6 6 8 8 6 4
+ 2 6 4 4 6 6 8 8 6 4 6 6 8 8 6 8 8]
+max distance 8
+min distance 0
+chosen distance 2
+size of mask  37
+[[ 0  0 -8]
+ [ 0 -1 -7]
+ [ 0 -2 -6]
+ ...
+ [ 7  0  1]
+ [ 7  1  0]
+ [ 8  0  0]]
+[8 8 8 ... 8 8 8]
+max distance 8
+min distance 0
+chosen distance 0
+size of mask  15
+[[ 0  0  0 -8]
+ [ 0  0 -1 -7]
+ [ 0  0 -2 -6]
+ ...
+ [ 7  0  1  0]
+ [ 7  1  0  0]
+ [ 8  0  0  0]]
+[8 8 8 ... 8 8 8]
+max distance 8
+min distance 0
+chosen distance 0
+size of mask  35
+[[ 0  0  0  0 -8]
+ [ 0  0  0 -1 -7]
+ [ 0  0  0 -2 -6]
+ ...
+ [ 7  0  1  0  0]
+ [ 7  1  0  0  0]
+ [ 8  0  0  0  0]]
+[8 8 8 ... 8 8 8]
+max distance 8
+min distance 0
+chosen distance 0
+size of mask  70
+[[ 0  0  0  0  0 -8]
+ [ 0  0  0  0 -1 -7]
+ [ 0  0  0  0 -2 -6]
+ ...
+ [ 7  0  1  0  0  0]
+ [ 7  1  0  0  0  0]
+ [ 8  0  0  0  0  0]]
+[8 8 8 ... 8 8 8]
+max distance 8
+min distance 0
+chosen distance 0
+size of mask  126
+[[ 0  0  0 ...  0  0 -8]
+ [ 0  0  0 ...  0 -1 -7]
+ [ 0  0  0 ...  0 -2 -6]
+ ...
+ [ 7  0  1 ...  0  0  0]
+ [ 7  1  0 ...  0  0  0]
+ [ 8  0  0 ...  0  0  0]]
+[8 8 8 ... 8 8 8]
+max distance 8
+min distance 0
+chosen distance 0
+size of mask  210
+[[ 0  0  0 ...  0  0 -8]
+ [ 0  0  0 ...  0 -1 -7]
+ [ 0  0  0 ...  0 -2 -6]
+ ...
+ [ 7  0  1 ...  0  0  0]
+ [ 7  1  0 ...  0  0  0]
+ [ 8  0  0 ...  0  0  0]]
+[8 8 8 ... 8 8 8]
+max distance 8
+min distance 0
+chosen distance 0
+size of mask  330
+[[ 0  0  0 ...  0  0 -8]
+ [ 0  0  0 ...  0 -1 -7]
+ [ 0  0  0 ...  0 -2 -6]
+ ...
+ [ 7  0  1 ...  0  0  0]
+ [ 7  1  0 ...  0  0  0]
+ [ 8  0  0 ...  0  0  0]]
+[8 8 8 ... 8 8 8]
+max distance 8
+min distance 0
+chosen distance 0
+size of mask  495</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>,figsize<span class="op">=</span>(<span class="dv">15</span>,<span class="dv">15</span>))</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>ax.plot(flats,color<span class="op">=</span><span class="st">'green'</span>,label<span class="op">=</span><span class="st">'Estimate'</span>)</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>ax.plot(lses,color<span class="op">=</span><span class="st">'blue'</span>,label<span class="op">=</span><span class="st">'Empirical'</span>)</span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>ax.legend()</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">"Dimensionality comparison"</span>)</span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">"Dimension"</span>)</span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">"Laziness"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>Text(0, 0.5, 'Laziness')</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="02c_flat_walk_estimation_files/figure-html/cell-21-output-2.png" class="img-fluid"></p>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
