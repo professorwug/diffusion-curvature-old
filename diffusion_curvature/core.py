@@ -35,11 +35,18 @@ def DiffusionMatrix(X, kernel_type = "fixed", sigma = 0.7, k = 20, alpha = 0.5, 
             D = np.diag(1/np.sum(W,axis=1)) 
             W = D @ W @ D
     elif kernel_type == "nearest neighbor":
-        raise NotImplementedError
+        pass
     elif kernel_type == "anisotropic":
         W1 = np.exp(-D**2/(2*sigma**2))
         D = np.diag(1/np.sum(W1,axis=1)) 
         W = D @ W1 @ D
+    elif kernel_type == "alpha-decay":
+        distance_to_k_neighbor = tf.nn.top_k(D, k = k, sorted = True).values[:,-1]
+        distance_to_k_neighbor = tf.cast(distance_to_k_neighbor,tf.float32)
+        D = tf.cast(D, tf.float32)
+        div1 = tf.linalg.matmul(tf.ones(len(D))[:,None], distance_to_k_neighbor[None,:])
+        div2 = tf.linalg.matmul(distance_to_k_neighbor[:,None],tf.ones(len(D))[None,:])
+        W = 0.5*(tf.exp(-(D/div1)**alpha) + tf.exp(-(D/div2)**alpha))
     else:
         raise ValueError("kernel_type must be either 'fixed' or 'adaptive'")  
     if affinity_matrix_only:

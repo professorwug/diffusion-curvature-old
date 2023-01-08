@@ -7,36 +7,28 @@ __all__ = ['curvature']
 import torch
 from torch import sparse
 def curvature(P, diffusion_powers = 8, aperture = 20, smoothing = 1, avg_transition_probabilities = True, precomputed_powered_P = None):
-    """Same as the `curvature` function, but uses pytorch as backend instead of numpy. 
-    Works on regular tensors (but not yet sparse tensors)
-    """
-    sample_number = 50
-    row_partitions = torch.empty(sample_number)
-    for idx, i in enumerate(torch.randint(P.shape[0], size = (sample_number,))):
-        if P.is_sparse:
-            row_partitions[idx] = torch.topk(P[i].values(), aperture, largest=True, sorted = True)[0][-1]
-        else:
-            row_partitions[idx] = torch.topk(P[i], aperture, largest=True, sorted = True)[0][-1]
-    P_threshold = torch.mean(row_partitions)
-    if P.is_sparse:
-        P_thresholded = (P)
-        raise NotImplementedError
-    else:
-        P_thresholded = (P >= P_threshold).to(int)
-    # Compute powers of P
-    if precomputed_powered_P is not None:
-        P_powered = precomputed_powered_P
-    else:
-        P_powered = torch.linalg.matrix_power(P, diffusion_powers)
-    near_neighbors_only = P_powered * P_thresholded
-    if near_neighbors_only.is_sparse:
-        laziness_aggregate = sparse.sum(near_neighbors_only,dim=[1]).to_dense()
-    else:
-        laziness_aggregate = torch.sum(near_neighbors_only, dim=1)
-    laziness = laziness_aggregate
-    if smoothing:
-        average_laziness = P @ laziness[:,None]
-        average_laziness = average_laziness.squeeze()
-        laziness = average_laziness
-    return laziness
+  """Same as the `curvature` function, but uses pytorch as backend instead of numpy. 
+  Works on both tensors and COO sparse tensors.
+  """
+  sample_number = 100
+  row_partitions = torch.empty(sample_number)
+  for idx, i in enumerate(torch.randint(P.shape[0]), size = (sample_number,)):
+    row_partitions[idx] = torch.topk(P[i].dense(), aperture, largest=True, sorted = True)[0]
+  P_threshold = torch.mean(row_partitions)
+  # Compute powers of P
+  if precomputed_powered_P is not None:
+    P_powered = precomputed_powered_P
+  else:
+    P_powered = torch.linalg.matrix_power(P, diffusion_powers)
+  near_neighbors_only = P_powered * P_threshold
+  if near_neighbors_only.is_sparse:
+    laziness_aggregate = sparse.sum(near_neighbors_only,dim=[1]).to_dense()
+  else:
+    laziness_aggregate = torch.sum(near_neighbors_only, dim=1)
+  laziness = laziness_aggregate
+  if smoothing:
+    average_laziness = P @ laziness[:,None]
+    average_laziness = average_laziness.squeeze()
+    laziness = average_laziness
+  return laziness
 

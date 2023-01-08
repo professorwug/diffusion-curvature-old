@@ -5,7 +5,7 @@ __all__ = ['curvature']
 
 # %% ../02_laziness.ipynb 3
 import numpy as np
-def curvature(P, diffusion_powers=8, aperture = 20, smoothing=1, verbose = False, return_density = False, dynamically_adjusting_neighborhood = False, precomputed_powered_P = None, non_lazy_diffusion=False, avg_transition_probability=True, use_min_threshold = False, sample_number=50):
+def curvature(P, diffusion_powers=8, aperture = 20, smoothing=1, verbose = False, return_density = False, dynamically_adjusting_neighborhood = False, precomputed_powered_P = None, non_lazy_diffusion=False, restrict_diffusion_to_k_neighborhood=None, avg_transition_probability=True, use_min_threshold = False):
     """Diffusion Laziness Curvature
     Estimates curvature by measuring the amount of mass remaining within an initial neighborhood after t steps of diffusion. Akin to measuring the laziness of a random walk after t steps.
 
@@ -40,20 +40,22 @@ def curvature(P, diffusion_powers=8, aperture = 20, smoothing=1, verbose = False
     # the aperture sets the size of the one-hop neighborhood 
     # the aperture parameter is the average number of neighbors to include, based off of the sorted diffusion values
     # Set thresholds as the kth largest diffusion value, presumed to be held by the kth nearest neighbor.
-    thresholds = np.empty(sample_number)
-    for idx, i in enumerate(np.random.randint(P.shape[0], size = (sample_number,))):
-        threshold_i = np.partition(P[i],-aperture)[-aperture]
-        thresholds[idx] = threshold_i
-    # # thresholds = np.sort(P)[:,-aperture] 
-    # if verbose: print(thresholds)
-    # if dynamically_adjusting_neighborhood:
-    #     P_thresholded = (P >= thresholds[:,None]).astype(int)
-    # else:
-    #     if use_min_threshold:
-    #         P_threshold = np.min(thresholds)
-    #     else:
-    P_threshold = np.mean(thresholds) # TODO could also use min
-    P_thresholded = (P >= P_threshold).astype(int)
+    thresholds = np.partition(P,-aperture)[:,-aperture]
+    # thresholds = np.sort(P)[:,-aperture] 
+    if verbose: print(thresholds)
+    if dynamically_adjusting_neighborhood:
+        P_thresholded = (P >= thresholds[:,None]).astype(int)
+    else:
+        if use_min_threshold:
+            P_threshold = np.min(thresholds)
+        else:
+            P_threshold = np.mean(thresholds) # TODO could also use min
+        P_thresholded = (P >= P_threshold).astype(int)
+        if verbose: print("Derived threshold ",P_threshold)
+
+    if verbose: print(np.sum(P_thresholded,axis=1))
+    if verbose: print("Performing matrix powers...")
+    
     if precomputed_powered_P is not None:
         P_powered = precomputed_powered_P
     elif non_lazy_diffusion:

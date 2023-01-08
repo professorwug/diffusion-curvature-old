@@ -3,11 +3,8 @@
 # %% auto 0
 __all__ = ['laziness_decay']
 
-# %% ../02a_laziness_decay.ipynb 5
-import numpy as np
+# %% ../02a_laziness_decay.ipynb 6
 from tqdm.notebook import trange
-from .laziness import *
-from .local_laziness import *
 def laziness_decay(A, max_steps = 32, aperture = 20, neighborhood=10, smoothing=1, adaptive_neighborhood = False, non_lazy_diffusion=False,use_local_laziness=False):
     """Generates a matrix of the decaying laziness value per point over a range of t values
 
