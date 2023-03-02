@@ -38,7 +38,7 @@ def DiffusionMatrix(X, kernel_type = "fixed", sigma = 0.7, k = 20, alpha = 0.5, 
         pass
     elif kernel_type == "anisotropic":
         W1 = np.exp(-D**2/(2*sigma**2))
-        D = np.diag(1/np.sum(W1,axis=1)) 
+        D = np.diag(1/np.sum(W1,axis=1)**alpha) 
         W = D @ W1 @ D
     elif kernel_type == "alpha-decay":
         distance_to_k_neighbor = tf.nn.top_k(D, k = k, sorted = True).values[:,-1]

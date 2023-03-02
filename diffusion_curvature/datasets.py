@@ -2,7 +2,7 @@
 
 # %% auto 0
 __all__ = ['rejection_sample_for_torus', 'torus', 'rejection_sample_for_hyperboloid', 'hyperboloid',
-           'rejection_sample_for_ellipsoid', 'ellipsoid', 'rejection_sample_for_saddle', 'paraboloid']
+           'rejection_sample_for_ellipsoid', 'ellipsoid', 'sphere', 'rejection_sample_for_saddle', 'paraboloid']
 
 # %% ../01_datasets.ipynb 2
 import numpy as np
@@ -144,6 +144,17 @@ def ellipsoid(n=2000,a=3,b=2,c=1, seed=None):
     ks = 2* (a**2 * b**2 * c**2) / (a**2 * b**2 * np.cos(phi)**2 + c**2 * (b**2 * np.cos(theta)**2 + a**2 * np.sin(theta)**2)*np.sin(phi)**2)**2
     
     return data, ks
+
+# %% ../01_datasets.ipynb 34
+def sphere(n, radius=1,noise=0):
+    u = np.random.normal(0,1,size=(n))
+    v = np.random.normal(0,1,size=(n))
+    w = np.random.normal(0,1,size=(n))
+    norm = (u*u + v*v + w*w)**(0.5)
+    (x,y,z) = (u,v,w)/norm
+    X = np.column_stack([x,y,z])
+    ks = np.ones(n)*2
+    return X, ks
 
 # %% ../01_datasets.ipynb 41
 def rejection_sample_for_saddle(n,a,b):
