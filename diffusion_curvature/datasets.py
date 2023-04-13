@@ -2,7 +2,8 @@
 
 # %% auto 0
 __all__ = ['rejection_sample_for_torus', 'torus', 'rejection_sample_for_hyperboloid', 'hyperboloid',
-           'rejection_sample_for_ellipsoid', 'ellipsoid', 'sphere', 'rejection_sample_for_saddle', 'paraboloid']
+           'rejection_sample_for_ellipsoid', 'ellipsoid', 'sphere', 'rejection_sample_for_saddle', 'paraboloid',
+           'plane']
 
 # %% ../01_datasets.ipynb 2
 import numpy as np
@@ -10,6 +11,7 @@ from .core import plot_3d
 from nbdev.showdoc import *
 
 # %% ../01_datasets.ipynb 16
+import numpy as np
 def rejection_sample_for_torus(n, r, R):
     # Rejection sampling torus method [Sampling from a torus (Revolutions)](https://blog.revolutionanalytics.com/2014/02/sampling-from-a-torus.html)
     xvec = np.random.random(n) * 2 * np.pi
@@ -146,13 +148,17 @@ def ellipsoid(n=2000,a=3,b=2,c=1, seed=None):
     return data, ks
 
 # %% ../01_datasets.ipynb 34
-def sphere(n, radius=1,noise=0):
+def sphere(n, radius=1,noise=0, use_guide_points = False):
+    if use_guide_points:
+        n = n - 1
     u = np.random.normal(0,1,size=(n))
     v = np.random.normal(0,1,size=(n))
     w = np.random.normal(0,1,size=(n))
     norm = (u*u + v*v + w*w)**(0.5)
     (x,y,z) = (u,v,w)/norm
     X = np.column_stack([x,y,z])
+    if use_guide_points:
+        X = np.vstack([np.array([0,0,1]),X])
     ks = np.ones(n)*2
     return X, ks
 
@@ -202,3 +208,9 @@ def paraboloid(n=2000,a=1,b=-1, seed=None, use_guide_points = False):
     ks = -(4*a**6 * b**6)/(a**4*b**4 + 4*b**4*x**2+4*a**4*y**2)**2
     
     return data, ks
+
+# %% ../01_datasets.ipynb 50
+def plane(n):
+    coords_2d = np.random.rand(n,2)*2-1
+    coords_2d = np.vstack([np.zeros(2),np.array([0,0.2]),np.array([0,-0.2]),np.zeros(2),coords_2d])
+    return coords_2d

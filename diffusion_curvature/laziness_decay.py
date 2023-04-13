@@ -38,10 +38,7 @@ def laziness_decay(A, max_steps = 32, aperture = 20, neighborhood=10, smoothing=
         P = D @ P_zero_diagonal
     P_t = P
     for t in trange(1,max_steps+1):
-        if use_local_laziness:
-            laziness = local_laziness(A,diffusion_powers = t,aperture=aperture,neighborhood=neighborhood,smoothing=1)
-        else:
-            P_t = P_t @ P
-            laziness = curvature(P,diffusion_powers=t,aperture=aperture,precomputed_powered_P=P_t,smoothing=smoothing,dynamically_adjusting_neighborhood=adaptive_neighborhood, non_lazy_diffusion=non_lazy_diffusion)
+        P_t = P_t @ P
+        laziness = curvature(P,diffusion_powers=t,aperture=aperture,precomputed_powered_P=P_t,smoothing=smoothing,dynamically_adjusting_neighborhood=adaptive_neighborhood, non_lazy_diffusion=non_lazy_diffusion)
         decay_per_point[:,t-1] = laziness
     return decay_per_point

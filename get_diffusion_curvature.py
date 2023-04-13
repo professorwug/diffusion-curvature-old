@@ -20,7 +20,7 @@ parser.add_argument('--sigma',type=float,help="Kernel bandwidth for anisotropic 
 parser.add_argument('--k', type=int, help='number of neighbors to be used by adaptive kernel',default=20)
 args = parser.parse_args()
 
-def DiffusionMatrix(X, kernel_type = "fixed", sigma = 0.7, k = 20, alpha = 0.5, affinity_matrix_only=False):
+def diffusion_matrix(X, kernel_type = "fixed", sigma = 0.7, k = 20, alpha = 0.5, affinity_matrix_only=False):
     """
     Given input X returns a diffusion matrix P, as an numpy ndarray.
     X is a numpy array of size n x d
@@ -162,7 +162,7 @@ def curvature(P, diffusion_powers=8, aperture = 20, smoothing=1, verbose = False
 
 if __name__ == '__main__':
   X = np.loadtxt(args.file, dtype=float)
-  P = DiffusionMatrix(X,kernel_type=args.kernel,k=args.k,sigma=args.sigma)
+  P = diffusion_matrix(X,kernel_type=args.kernel,k=args.k,sigma=args.sigma)
   # compute laziness values
   ls = curvature(P,diffusion_powers=args.t,aperture=args.aperture)
   print(ls)
