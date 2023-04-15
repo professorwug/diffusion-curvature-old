@@ -36,6 +36,9 @@ def diffusion_entropy_of_noise(dimension, t, n_flat_samples) -> float:
     # note that the edges of this distribution aren't trustworthy; we only care about the middle
     # so we'll take just the entropy of the random noise
     entropy_flat = diffusion_entropy_curvature_of_data(noisy_flat, t = t)
+    # TODO: This is ridiculously wasteful. It computes the curvature of every point, when we only need
+    # the central point.
+    # At least average over some points
     return entropy_flat[0]
 
 def diffusion_curvature_contra_noise(X, dimension, t=8, k=10) -> np.ndarray:

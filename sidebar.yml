@@ -21,4 +21,6 @@ website:
       - 08-comparison-curvature.ipynb
       - 08a_Uniform_Random_Sampling_Comparison.ipynb
       - 08b_continuous_normalizing_flows.ipynb
+      - 09a_curvature_curves_in_euclidean_space.ipynb
+      - 10_Diagonal_diffusion_curvature.ipynb
       - Does the Anisotropic Kernel Remove Curvature Density Correlations.ipynb
