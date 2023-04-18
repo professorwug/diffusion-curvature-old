@@ -93,6 +93,9 @@ celerybeat-schedule
 # SageMath parsed files
 *.sage.py
 
+# lightning logs
+lightning_logs/
+
 # dotenv
 .env
 
