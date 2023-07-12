@@ -3,7 +3,7 @@
 # %% auto 0
 __all__ = ['single_point_diffusion_curvature_contra_neural_flattening']
 
-# %% ../08c_sampling_learned_by_ode.ipynb 20
+# %% ../08c_sampling_learned_by_ode.ipynb 21
 from sklearn.decomposition import PCA
 def single_point_diffusion_curvature_contra_neural_flattening(X, idx, dimension, t=8, k=10, n_neighbors = 100):
     # prepare neighborhood

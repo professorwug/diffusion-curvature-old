@@ -114,7 +114,7 @@ def rejection_sample_for_ellipsoid(n,a,b,c):
     yvec = np.random.random(n) * (1/np.max(fx))
     return theta[yvec < fx], phi[yvec < fx]
 
-def ellipsoid(n=2000,a=3,b=2,c=1, seed=None):
+def ellipsoid(n=2000,a=3,b=2,c=1, seed=None, noise=None):
     """Sample roughly n points on an ellipsoid, using rejection sampling.
 
     Parameters
@@ -145,6 +145,11 @@ def ellipsoid(n=2000,a=3,b=2,c=1, seed=None):
     # compute curvature of sampled torus (gaussian curvature)
     ks = 2* (a**2 * b**2 * c**2) / (a**2 * b**2 * np.cos(phi)**2 + c**2 * (b**2 * np.cos(theta)**2 + a**2 * np.sin(theta)**2)*np.sin(phi)**2)**2
     
+    # add noise to data, if needed
+    if noise:
+        noise = np.random.randn(len(data),3)*noise
+        data = data + noise
+    
     return data, ks
 
 # %% ../01_datasets.ipynb 34
@@ -162,7 +167,7 @@ def sphere(n, radius=1,noise=0, use_guide_points = False):
     ks = np.ones(n)*2
     return X, ks
 
-# %% ../01_datasets.ipynb 41
+# %% ../01_datasets.ipynb 42
 def rejection_sample_for_saddle(n,a,b):
     x = np.random.random(n)*2 - 1 # random values in -1, 1
     y = np.random.random(n)*2 - 1
@@ -209,7 +214,7 @@ def paraboloid(n=2000,a=1,b=-1, seed=None, use_guide_points = False):
     
     return data, ks
 
-# %% ../01_datasets.ipynb 50
+# %% ../01_datasets.ipynb 51
 def plane(n):
     coords_2d = np.random.rand(n,2)*2-1
     coords_2d = np.vstack([np.zeros(2),np.array([0,0.2]),np.array([0,-0.2]),np.zeros(2),coords_2d])

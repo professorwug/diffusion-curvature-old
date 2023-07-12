@@ -1,0 +1,13 @@
+#+title: Entropic Diffusion Curvature
+
+* Philosophy
+Diffusion curvature has grown from a very simple idea: that the /laziness/ of a random walk reveals the curvature of its surrounding region. Applied to diffusion, this means that (e.g.) heat spreads more quickly in areas with negative curvature, while it remains clumped closer to the center in positively curved areas. The /shape/ of diffusion hints at the geometry of the surface it diffuses over. How could it be any different?
+
+Entropic diffusion curvature is a means of capturing this shape by, as the name suggests, taking the shannon entropy of the diffusion. More diffuse distributions are more uncertain, with a higher entropy, and vice versa for lazy diffusions. This simple idea has a nice theoretical foundation. As explored in MacDonald '23 (the author's thesis), entropic diffusion curvature can be formulated as a pointwise version of Ollivier's Coarse Ricci Curvature, which uses the KL Divergence instead of the Wasserstein distance. What's more, by comparing to the entropy of diffusion in a space of the same dimension as the manifold in question, we can recover not just the magnitude of curvature, but also the sign, differentiating the spherical from the hyperbolic categorically.
+
+Computing the entropic diffusion curvature has two main computational steps:
+1. Creating a graph, and computing multiscale diffusions from it.
+2. Estimating the dimension of the given ambient space.
+
+
+* Structure
