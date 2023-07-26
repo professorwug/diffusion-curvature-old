@@ -2,7 +2,6 @@ website:
   sidebar:
     contents:
       - index.ipynb
-      - 00_core-jvsc-a33f08f0-f69f-4138-bbc9-e8fc98c694f6c4ae1b46-48f2-4d16-abe0-f47aa44a4eef.ipynb
       - 00_core.ipynb
       - 00a_diffusion_curvature_explained.ipynb
       - 01_datasets.ipynb
@@ -21,6 +20,12 @@ website:
       - 08-comparison-curvature.ipynb
       - 08a_Uniform_Random_Sampling_Comparison.ipynb
       - 08b_continuous_normalizing_flows.ipynb
+      - 08c_sampling_learned_by_ode.ipynb
       - 09a_curvature_curves_in_euclidean_space.ipynb
+      - 09b01_Intra_dataset_comparison_with_torus.ipynb
+      - 09b_analytic_curvature_curves.ipynb
       - 10_Diagonal_diffusion_curvature.ipynb
+      - 11_Wasserstein_Diffusion_Curvature.ipynb
+      - 20-diffusion-curvature-benchmarks.ipynb
       - Does the Anisotropic Kernel Remove Curvature Density Correlations.ipynb
+      - Untitled.ipynb
