@@ -25,8 +25,6 @@
       devShell = pkgs.mkShell {
         buildInputs = [
           pkgs.poetry
-          pkgs.python310Packages.pandas
-          pkgs.python310Packages.spacy
         ];
       };
     }));
