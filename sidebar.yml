@@ -3,29 +3,13 @@ website:
     contents:
       - index.ipynb
       - 00_core.ipynb
-      - 00a_diffusion_curvature_explained.ipynb
       - 01_datasets.ipynb
-      - 02_laziness.ipynb
-      - 02a_laziness_decay.ipynb
-      - 03a_hyperboloid-tests.ipynb
-      - 03c_Absolute-Curvature-with-Laziness.ipynb
-      - 03d_ground_truth_comparisons.ipynb
-      - 03e_Comparison with Ollivier Ricci.ipynb
-      - 05a_gaussian_explorations.ipynb
-      - 05b_gaussian_invariance.ipynb
-      - 05c_gaussian_convolutional_invariance.ipynb
-      - 05d_squaring_diffusions.ipynb
-      - 06c_volume_comparison_curvature.ipynb
-      - 07_lp_diffusion_curvature.ipynb
-      - 08-comparison-curvature.ipynb
-      - 08a_Uniform_Random_Sampling_Comparison.ipynb
-      - 08b_continuous_normalizing_flows.ipynb
-      - 08c_sampling_learned_by_ode.ipynb
-      - 09a_curvature_curves_in_euclidean_space.ipynb
-      - 09b01_Intra_dataset_comparison_with_torus.ipynb
-      - 09b_analytic_curvature_curves.ipynb
-      - 10_Diagonal_diffusion_curvature.ipynb
-      - 11_Wasserstein_Diffusion_Curvature.ipynb
-      - 20-diffusion-curvature-benchmarks.ipynb
-      - Does the Anisotropic Kernel Remove Curvature Density Correlations.ipynb
+      - Core (ManifoldGraph).ipynb
+      - Core (graphtools).ipynb
+      - Core (pyg).ipynb
+      - Diffusion Entropy Curvature.ipynb
+      - Diffusion Entropy Curvature.sync-conflict-20230727-071559-NXPHTTX.ipynb
+      - Manifold Distances.ipynb
       - Untitled.ipynb
+      - Untitled1.ipynb
+      - Wasserstein Diffusion Curvature.ipynb

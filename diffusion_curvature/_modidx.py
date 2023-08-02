@@ -45,23 +45,35 @@ d = { 'settings': { 'branch': 'master',
                                                 'diffusion_curvature.graphtools.DiffusionCurvature.__init__': ( 'core '
                                                                                                                 '(graphtools).html#diffusioncurvature.__init__',
                                                                                                                 'diffusion_curvature/graphtools.py'),
+                                                'diffusion_curvature.graphtools.DiffusionCurvature.curvature': ( 'core '
+                                                                                                                 '(graphtools).html#diffusioncurvature.curvature',
+                                                                                                                 'diffusion_curvature/graphtools.py'),
                                                 'diffusion_curvature.graphtools.DiffusionCurvature.distances': ( 'core '
                                                                                                                  '(graphtools).html#diffusioncurvature.distances',
                                                                                                                  'diffusion_curvature/graphtools.py'),
+                                                'diffusion_curvature.graphtools.DiffusionCurvature.entropy_of_diffusion': ( 'core '
+                                                                                                                            '(graphtools).html#diffusioncurvature.entropy_of_diffusion',
+                                                                                                                            'diffusion_curvature/graphtools.py'),
+                                                'diffusion_curvature.graphtools.DiffusionCurvature.flattened_facsimile_of_graph': ( 'core '
+                                                                                                                                    '(graphtools).html#diffusioncurvature.flattened_facsimile_of_graph',
+                                                                                                                                    'diffusion_curvature/graphtools.py'),
                                                 'diffusion_curvature.graphtools.DiffusionCurvature.power_diffusion_matrix': ( 'core '
                                                                                                                               '(graphtools).html#diffusioncurvature.power_diffusion_matrix',
-                                                                                                                              'diffusion_curvature/graphtools.py')},
-            'diffusion_curvature.kernels': { 'diffusion_curvature.kernels.compute_anisotropic_affinities_from_graph': ( 'core.html#compute_anisotropic_affinities_from_graph',
+                                                                                                                              'diffusion_curvature/graphtools.py'),
+                                                'diffusion_curvature.graphtools.DiffusionCurvature.wasserstein_spread_of_diffusion': ( 'core '
+                                                                                                                                       '(graphtools).html#diffusioncurvature.wasserstein_spread_of_diffusion',
+                                                                                                                                       'diffusion_curvature/graphtools.py')},
+            'diffusion_curvature.kernels': { 'diffusion_curvature.kernels.compute_anisotropic_affinities_from_graph': ( 'kernels.html#compute_anisotropic_affinities_from_graph',
                                                                                                                         'diffusion_curvature/kernels.py'),
-                                             'diffusion_curvature.kernels.compute_anisotropic_diffusion_matrix_from_graph': ( 'core.html#compute_anisotropic_diffusion_matrix_from_graph',
+                                             'diffusion_curvature.kernels.compute_anisotropic_diffusion_matrix_from_graph': ( 'kernels.html#compute_anisotropic_diffusion_matrix_from_graph',
                                                                                                                               'diffusion_curvature/kernels.py'),
-                                             'diffusion_curvature.kernels.diffusion_matrix': ( 'core.html#diffusion_matrix',
+                                             'diffusion_curvature.kernels.diffusion_matrix': ( 'kernels.html#diffusion_matrix',
                                                                                                'diffusion_curvature/kernels.py'),
-                                             'diffusion_curvature.kernels.gaussian_kernel': ( 'core.html#gaussian_kernel',
+                                             'diffusion_curvature.kernels.gaussian_kernel': ( 'kernels.html#gaussian_kernel',
                                                                                               'diffusion_curvature/kernels.py'),
-                                             'diffusion_curvature.kernels.median_heuristic': ( 'core.html#median_heuristic',
+                                             'diffusion_curvature.kernels.median_heuristic': ( 'kernels.html#median_heuristic',
                                                                                                'diffusion_curvature/kernels.py'),
-                                             'diffusion_curvature.kernels.plot_3d': ( 'core.html#plot_3d',
+                                             'diffusion_curvature.kernels.plot_3d': ( 'kernels.html#plot_3d',
                                                                                       'diffusion_curvature/kernels.py')},
             'diffusion_curvature.wasserstein': { 'diffusion_curvature.wasserstein.WassersteinDiffusionCurvature': ( 'wasserstein diffusion '
                                                                                                                     'curvature.html#wassersteindiffusioncurvature',
