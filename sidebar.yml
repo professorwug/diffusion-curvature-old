@@ -2,14 +2,11 @@ website:
   sidebar:
     contents:
       - index.ipynb
-      - 00_core.ipynb
-      - 01_datasets.ipynb
       - Core (ManifoldGraph).ipynb
       - Core (graphtools).ipynb
       - Core (pyg).ipynb
-      - Diffusion Entropy Curvature.ipynb
-      - Diffusion Entropy Curvature.sync-conflict-20230727-071559-NXPHTTX.ipynb
+      - Datasets.ipynb
+      - Kernels.ipynb
       - Manifold Distances.ipynb
       - Untitled.ipynb
       - Untitled1.ipynb
-      - Wasserstein Diffusion Curvature.ipynb

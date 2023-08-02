@@ -27,18 +27,6 @@ d = { 'settings': { 'branch': 'master',
                                                                                       'diffusion_curvature/datasets.py')},
             'diffusion_curvature.distances': { 'diffusion_curvature.distances.phate_distances': ( 'manifold distances.html#phate_distances',
                                                                                                   'diffusion_curvature/distances.py')},
-            'diffusion_curvature.entropy': { 'diffusion_curvature.entropy.diffusion_curvature_contra_noise': ( 'diffusion entropy '
-                                                                                                               'curvature.sync-conflict-20230727-071559-nxphttx.html#diffusion_curvature_contra_noise',
-                                                                                                               'diffusion_curvature/entropy.py'),
-                                             'diffusion_curvature.entropy.diffusion_entropy_curvature_of_data': ( 'diffusion entropy '
-                                                                                                                  'curvature.sync-conflict-20230727-071559-nxphttx.html#diffusion_entropy_curvature_of_data',
-                                                                                                                  'diffusion_curvature/entropy.py'),
-                                             'diffusion_curvature.entropy.diffusion_entropy_of_noise': ( 'diffusion entropy '
-                                                                                                         'curvature.sync-conflict-20230727-071559-nxphttx.html#diffusion_entropy_of_noise',
-                                                                                                         'diffusion_curvature/entropy.py'),
-                                             'diffusion_curvature.entropy.local_diffusion_entropy_of_matrix': ( 'diffusion entropy '
-                                                                                                                'curvature.sync-conflict-20230727-071559-nxphttx.html#local_diffusion_entropy_of_matrix',
-                                                                                                                'diffusion_curvature/entropy.py')},
             'diffusion_curvature.graphtools': { 'diffusion_curvature.graphtools.DiffusionCurvature': ( 'core '
                                                                                                        '(graphtools).html#diffusioncurvature',
                                                                                                        'diffusion_curvature/graphtools.py'),
@@ -62,7 +50,12 @@ d = { 'settings': { 'branch': 'master',
                                                                                                                               'diffusion_curvature/graphtools.py'),
                                                 'diffusion_curvature.graphtools.DiffusionCurvature.wasserstein_spread_of_diffusion': ( 'core '
                                                                                                                                        '(graphtools).html#diffusioncurvature.wasserstein_spread_of_diffusion',
-                                                                                                                                       'diffusion_curvature/graphtools.py')},
+                                                                                                                                       'diffusion_curvature/graphtools.py'),
+                                                'diffusion_curvature.graphtools.get_graph_type': ( 'core (graphtools).html#get_graph_type',
+                                                                                                   'diffusion_curvature/graphtools.py'),
+                                                'diffusion_curvature.graphtools.plot_manifold_curvature': ( 'core '
+                                                                                                            '(graphtools).html#plot_manifold_curvature',
+                                                                                                            'diffusion_curvature/graphtools.py')},
             'diffusion_curvature.kernels': { 'diffusion_curvature.kernels.compute_anisotropic_affinities_from_graph': ( 'kernels.html#compute_anisotropic_affinities_from_graph',
                                                                                                                         'diffusion_curvature/kernels.py'),
                                              'diffusion_curvature.kernels.compute_anisotropic_diffusion_matrix_from_graph': ( 'kernels.html#compute_anisotropic_diffusion_matrix_from_graph',
@@ -74,30 +67,4 @@ d = { 'settings': { 'branch': 'master',
                                              'diffusion_curvature.kernels.median_heuristic': ( 'kernels.html#median_heuristic',
                                                                                                'diffusion_curvature/kernels.py'),
                                              'diffusion_curvature.kernels.plot_3d': ( 'kernels.html#plot_3d',
-                                                                                      'diffusion_curvature/kernels.py')},
-            'diffusion_curvature.wasserstein': { 'diffusion_curvature.wasserstein.WassersteinDiffusionCurvature': ( 'wasserstein diffusion '
-                                                                                                                    'curvature.html#wassersteindiffusioncurvature',
-                                                                                                                    'diffusion_curvature/wasserstein.py'),
-                                                 'diffusion_curvature.wasserstein.WassersteinDiffusionCurvature.__init__': ( 'wasserstein '
-                                                                                                                             'diffusion '
-                                                                                                                             'curvature.html#wassersteindiffusioncurvature.__init__',
-                                                                                                                             'diffusion_curvature/wasserstein.py'),
-                                                 'diffusion_curvature.wasserstein.WassersteinDiffusionCurvature.curvature_of_graph': ( 'wasserstein '
-                                                                                                                                       'diffusion '
-                                                                                                                                       'curvature.html#wassersteindiffusioncurvature.curvature_of_graph',
-                                                                                                                                       'diffusion_curvature/wasserstein.py'),
-                                                 'diffusion_curvature.wasserstein.WassersteinDiffusionCurvature.curvature_of_points': ( 'wasserstein '
-                                                                                                                                        'diffusion '
-                                                                                                                                        'curvature.html#wassersteindiffusioncurvature.curvature_of_points',
-                                                                                                                                        'diffusion_curvature/wasserstein.py'),
-                                                 'diffusion_curvature.wasserstein.WassersteinDiffusionCurvature.plot': ( 'wasserstein '
-                                                                                                                         'diffusion '
-                                                                                                                         'curvature.html#wassersteindiffusioncurvature.plot',
-                                                                                                                         'diffusion_curvature/wasserstein.py'),
-                                                 'diffusion_curvature.wasserstein.get_manifold_distances': ( 'wasserstein diffusion '
-                                                                                                             'curvature.html#get_manifold_distances',
-                                                                                                             'diffusion_curvature/wasserstein.py'),
-                                                 'diffusion_curvature.wasserstein.wasserstein_spread_of_diffusion_matrix': ( 'wasserstein '
-                                                                                                                             'diffusion '
-                                                                                                                             'curvature.html#wasserstein_spread_of_diffusion_matrix',
-                                                                                                                             'diffusion_curvature/wasserstein.py')}}}
+                                                                                      'diffusion_curvature/kernels.py')}}}
