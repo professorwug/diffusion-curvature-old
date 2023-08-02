@@ -7,7 +7,7 @@ __all__ = ['rejection_sample_for_torus', 'torus', 'rejection_sample_for_hyperbol
 
 # %% ../01_datasets.ipynb 1
 import numpy as np
-from .core import plot_3d
+from .kernels import plot_3d
 from nbdev.showdoc import *
 
 # %% ../01_datasets.ipynb 15

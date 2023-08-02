@@ -1,0 +1,26 @@
+website:
+  sidebar:
+    contents:
+      - index.ipynb
+      - 00_core-jvsc-a33f08f0-f69f-4138-bbc9-e8fc98c694f6c4ae1b46-48f2-4d16-abe0-f47aa44a4eef.ipynb
+      - 00_core.ipynb
+      - 00a_diffusion_curvature_explained.ipynb
+      - 01_datasets.ipynb
+      - 02_laziness.ipynb
+      - 02a_laziness_decay.ipynb
+      - 03a_hyperboloid-tests.ipynb
+      - 03c_Absolute-Curvature-with-Laziness.ipynb
+      - 03d_ground_truth_comparisons.ipynb
+      - 03e_Comparison with Ollivier Ricci.ipynb
+      - 05a_gaussian_explorations.ipynb
+      - 05b_gaussian_invariance.ipynb
+      - 05c_gaussian_convolutional_invariance.ipynb
+      - 05d_squaring_diffusions.ipynb
+      - 06c_volume_comparison_curvature.ipynb
+      - 07_lp_diffusion_curvature.ipynb
+      - 08-comparison-curvature.ipynb
+      - 08a_Uniform_Random_Sampling_Comparison.ipynb
+      - 08b_continuous_normalizing_flows.ipynb
+      - 09a_curvature_curves_in_euclidean_space.ipynb
+      - 10_Diagonal_diffusion_curvature.ipynb
+      - Does the Anisotropic Kernel Remove Curvature Density Correlations.ipynb
